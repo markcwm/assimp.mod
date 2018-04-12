@@ -23,6 +23,14 @@ Assimp source is included with this module and [Boost](http://www.boost.org/user
 
 The wrapper is a source import and can load meshes from streams either incbin or zipstream, so for unzip functionality [Koriolis.Zipstream](https://github.com/maxmods/koriolis.mod) is required. The module works in 32-bit and 64-bit but animations are not yet implemented.
 
+#### Installation ####
+
+* Copy **openb3dmaxlibs.mod** to the `MyBlitzMax/mod` folder, module folder names must end in **.mod**
+* If Windows, make sure you have a working version of MinGW. If Mac, make sure you have XCode installed. If Linux, read this guide:
+ [How To: Install BlitzMax NG on Win/Mac/Ubuntu 64-bit](https://www.syntaxbomb.com/index.php/topic,61.0.html)
+* Open a Terminal, cd to `MyBlitzMax/bin` and for BRL Bmx type `bmk makemods -a -d openb3dmaxlibs.assimp`
+* For NG in 64-bit use `bmk makemods -a -d -w -g x64 openb3dmaxlibs.assimp`, if on Mac/Linux use `./bmk`
+
 #### License ####
 
 Both the library and wrapper are licensed with the 3-clause BSD license.
