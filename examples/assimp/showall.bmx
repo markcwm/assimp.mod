@@ -3,8 +3,8 @@
 
 Strict
 
-Framework Openb3d.Openb3d
-Import Openb3dLibs.Assimp
+Framework Openb3dmax.Openb3d
+Import Openb3dmaxlibs.Assimp
 
 Graphics3D DesktopWidth(),DesktopHeight(),0,2
 
@@ -35,7 +35,6 @@ If FileSize(path)=-1 Then Print "Error: path not found"
 'skipExt.addlast("irrmesh")
 
 Local test%=0
-
 Select test
 	Case 0 ' load all formats
 		aiEnumFiles( filelist,path,skipExt )

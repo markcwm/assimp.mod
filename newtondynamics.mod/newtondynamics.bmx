@@ -5,11 +5,11 @@ SuperStrict
 Rem
 bbdoc: Newton Dynamics
 End Rem
-Module Openb3dLibs.NewtonDynamics
+Module Openb3dmaxlibs.Newtondynamics
 
 ModuleInfo "Version: 1.05"
 ModuleInfo "License: zlib"
-ModuleInfo "Copyright: Wrapper - 2015-2017 Bruce A Henderson, Mark Mcvittie"
+ModuleInfo "Copyright: Wrapper - 2015-2018 Bruce A Henderson"
 ModuleInfo "Copyright: Library - 2003-2011 Julio Jerez and Alain Suero"
 
 ModuleInfo "History: 1.05 Release - added DestroyAllBodies, SetMassMatrix, SetUserData, GetUserData"

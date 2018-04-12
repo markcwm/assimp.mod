@@ -3,8 +3,8 @@
 
 Strict
 
-Framework Openb3d.Openb3d
-Import Openb3dLibs.Assimp
+Framework Openb3dmax.Openb3d
+Import Openb3dmaxlibs.Assimp
 
 Incbin "../media/zombie.b3d"
 Incbin "../media/Zombie.jpg"
@@ -22,45 +22,49 @@ Local sphere:TMesh=CreateSphere()
 HideEntity sphere
 
 Local ent:TMesh
-
-Local zipfile:String = "../media/zombie.zip"
+Local zipfile:String="../media/zombie.zip"
 
 ' Note: you can load password protected zips but these are easily opened with 7zip as the filenames are not encrypted, 
 ' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak file to protect assets.
 'SetZipStreamPassword zipfile,"blitzmax"
 
+SetTextureLoader 1
+
 Local test%=3
-
 Select test
-
 	Case 1 ' load assimp mesh
 		Local time:Int=MilliSecs()
-		Local file:String = "../media/zombie.b3d"
-		ent = aiLoadMesh(file, Null, -2) ' -2 = flat shaded
+		ent=aiLoadMesh("../media/zombie.b3d", Null, -2) ' -2 = flat shaded
+		
 		DebugLog "assimp time="+(time-MilliSecs())
 		
 	Case 2 ' load incbin mesh (and texture as file not found)
 		Local time:Int=MilliSecs()
-		Local file:String = "incbin::../media/zombie.b3d"
-		ent=aiLoadMesh(file)
-		file = "incbin::../media/Zombie.jpg"
-		Local tex:TTexture=LoadTexture(file,9,True)
+		ent=aiLoadMesh("incbin::../media/zombie.b3d")
+		
+		Local tex:TTexture=LoadTexture("incbin::../media/Zombie.jpg")
 		EntityTexture ent,tex
+		
 		DebugLog "incbin time="+(time-MilliSecs())
 		
 	Case 3 ' load zip mesh (and texture as file not found)
 		Local time:Int=MilliSecs()
-		Local file:String = "zip::"+zipfile+"//zombie.b3d"
-		ent = aiLoadMesh(file)
-		file = "zip::"+zipfile+"//Zombie.jpg"
-		Local tex:TTexture=LoadTexture(file,9,True)
+		ent=aiLoadMesh("zip::"+zipfile+"//zombie.b3d")
+		
+		Local tex:TTexture=LoadTexture("zip::"+zipfile+"//Zombie.jpg")
 		EntityTexture ent,tex
+		
 		DebugLog "zip time="+(time-MilliSecs())
 		
-	Default ' load openb3d mesh
+	Default ' load library mesh
+		SetMeshLoader 2 ' 1 for streams (default), 2 for library
+		SetTextureLoader 2
+		
 		Local time:Int=MilliSecs()
 		ent=LoadAnimMesh("../media/zombie.b3d")
+		
 		DebugLog "openb3d time="+(time-MilliSecs())
+		
 End Select
 
 ' child entity variables

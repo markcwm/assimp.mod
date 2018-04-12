@@ -3,9 +3,8 @@
 
 SuperStrict
 
-Framework Openb3d.B3dglgraphics
-
-Import Openb3dLibs.NewtonDynamics
+Framework Openb3dmax.B3dglgraphics
+Import Openb3dmaxlibs.Newtondynamics
 Import Brl.Standardio
 
 Main()

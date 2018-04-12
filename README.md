@@ -1,13 +1,15 @@
-Openb3dlibs
-===========
+OpenB3DMaxLibs
+==============
 
-Blitzmax Openb3d library collection
+BlitzMax library wrappers for OpenB3DMax
 
 #### Newton Dynamics ####
 
-Blitzmax library wrapper for Newton dynamics 3.13. Newton 3.13 source is included in the module but can also be found on <a href="https://github.com/MADEAPPS/newton-dynamics/releases">Github</a>.
+BlitzMax library wrapper for Newton dynamics 3.13.
 
-The wrapper is not ready for use yet but there are a few basic examples.
+Newton 3.13 source is included in the module but can also be found on <a href="https://github.com/MADEAPPS/newton-dynamics/releases">Github</a>.
+
+The wrapper is not ready for use yet but there are a few basic examples. Currently the build is broken in NG 64-bit.
 
 #### License ####
 

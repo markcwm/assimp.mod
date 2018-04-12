@@ -2,8 +2,8 @@
 
 Strict
 
-Framework Openb3d.Openb3d
-Import Openb3dLibs.Assimp
+Framework Openb3dmax.Openb3d
+Import Openb3dmaxlibs.Assimp
 
 'Include "typeslib.bmx"
 'Include "types.bmx"
@@ -24,9 +24,7 @@ Local path$ = "../../assimplib.mod/assimp/test/models"
 Local ent:TMesh
 
 Local test%=2
-
 Select test
-	
 	Case 1
 		Local time:Int=MilliSecs()
 		Local file:String = "../media/zombie.b3d"
@@ -74,6 +72,7 @@ Select test
 		ent=aiLoader.LoadMesh(path+"BLEND/blender_269_regress1.blend")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
+		
 End Select
 
 ' child entity variables

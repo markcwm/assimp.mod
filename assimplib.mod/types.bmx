@@ -679,8 +679,11 @@ Type aiScene
 	Field NumMaterials:Int
 	Field materials:aiMaterial[]
 	
+	?ptr64
+	Method ImportFile:Long Ptr(fileName:String, readflags:Int)
+	?Not ptr64
 	Method ImportFile:Int Ptr(fileName:String, readflags:Int)
-	
+	?
 		If (Left(filename, 5) = "zip::") ' load zip mesh (ram stream by Pertubatio)
 		
 			Local fileStream:TStream = CreateBufferedStream(fileName)

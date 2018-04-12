@@ -8,13 +8,13 @@ about: Wrapper for Assimp (Open Asset Import) library. Imported by assimp.mod.
 Requires BaH.Boost source code and Koriolis.Zipstream module binaries, see module info links.
 To get BaH.Boost by Subversion open command-line and make sure you "cd" to bah.mod before checkout.
 End Rem
-Module Openb3dlibs.Assimplib
+Module Openb3dmaxlibs.Assimplib
 
 ModuleInfo "Version: 0.41"
 ModuleInfo "License: BSD-3-Clause"
-ModuleInfo "Copyright: Wrapper - 2009-2017 Peter Scheutz, Mark Mcvittie"
+ModuleInfo "Copyright: Wrapper - 2009-2018 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
-ModuleInfo "Source: https://github.com/markcwm/openb3dlibs.mod"
+ModuleInfo "Source: https://github.com/markcwm/openb3dmaxlibs.mod"
 ModuleInfo "Source: svn checkout https://github.com/maxmods/bah.mod/trunk/boost.mod"
 ModuleInfo "Source: https://github.com/maxmods/koriolis.mod"
 ModuleInfo "Source: https://github.com/assimp/assimp"
