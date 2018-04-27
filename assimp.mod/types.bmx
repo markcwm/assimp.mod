@@ -8,194 +8,6 @@ Type aiMinMax3D
 	
 End Type
 
-' assimp mesh loader
-Type aiLoader
-
-	Function LoadMesh:TMesh(filename:String, parent:TEntity=Null, flags:Int = -1)
-	
-		Local scene:aiScene = New aiScene
-		
-		' removed, caused crash
-		'aiSetImportPropertyInteger(aipropertystore?, AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT )
-		
-		Select flags
-			Case -1 ' smooth shaded
-				flags = aiProcess_Triangulate | ..
-				aiProcess_GenSmoothNormals | ..
-				aiProcess_SortByPType | ..
-				aiProcess_PreTransformVertices | ..
-				aiProcess_ConvertToLeftHanded | ..
-				aiProcess_JoinIdenticalVertices
-			Case -2 ' flat shaded
-				flags = aiProcess_Triangulate | ..
-				aiProcess_GenNormals | ..
-				aiProcess_SortByPType | ..
-				aiProcess_PreTransformVertices | ..
-				aiProcess_ConvertToLeftHanded | ..
-				aiProcess_CalcTangentSpace | ..
-				aiProcess_FindDegenerates | ..
-				aiProcess_FindInvalidData | ..
-				aiProcess_GenUVCoords | ..
-				aiProcess_TransformUVCoords
-		EndSelect
-		
-		If scene.ImportFile(filename, flags)
-		
-			' Make brushes
-			
-			Local brushes:TBrush[scene.NumMaterials]
-			Local i:Int
-			
-			For Local mat:aiMaterial = EachIn scene.Materials
-			
-				DebugLog " "
-				DebugLog " ----    Material Name " + mat.GetMaterialName()
-				DebugLog " ----    mat.IsTwoSided() " + mat.IsTwoSided()
-				DebugLog " ----    mat.GetShininess() " + mat.GetShininess()
-				DebugLog " ----    mat.GetAlpha() " + mat.GetAlpha()
-				
-				'Rem
-				Local names:String[] = mat.GetPropertyNames()
-				
-				For Local s:String = EachIn names
-				
-					DebugLog "Property: *" + s + "*"
-					'DebugLog "matbase " + mat.Properties[?].GetFloatValue(s)
-					
-					Select s
-						Case AI_MATKEY_TEXTURE_BASE
-							DebugLog "matbase " +  mat.GetMaterialString(s)
-					End Select
-					
-				Next
-				'EndRem
-				
-				Local DiffuseColors:Float[] = mat.GetMaterialColor(AI_MATKEY_COLOR_DIFFUSE)	
-				
-				brushes[i] = CreateBrush(mat.GetDiffuseRed() * 255,mat.GetDiffuseGreen() * 255,mat.GetDiffuseBlue() * 255)
-				
-				' seems alpha comes in different places denpending om model format.
-				' seems wavefront obj alpha doesn't load
-				'BrushAlpha brushes[i],mat.GetAlpha()' * mat.GetDiffuseAlpha() (might be 0 so not good)
-				
-				BrushShininess brushes[i],mat.GetShininess()
-				
-				If mat.IsTwoSided()
-					'BrushFX brushes[i], 16
-				EndIf
-				
-				Local texFilename:String = mat.GetMaterialTexture()
-				
-				DebugLog "TEXTURE filename: " + texFilename
-				
-				If Len(texFilename)
-				
-					' remove currentdir prefix, but leave relative subfolder path intact
-					If  texFilename[..2] = ".\" Or texFilename[..2] = "./"
-						texFilename = texFilename[2..]
-					EndIf
-					
-					'assume the texture names are stored relative to the file
-					texFilename  = ExtractDir(filename) + "/" + texFilename
-					
-					If Not FileType(texFilename)
-						texFilename = ExtractDir(filename) + "/" + StripDir(texFilename)
-					EndIf
-					
-					DebugLog texFilename
-					
-					If FileType(texFilename)
-						'DebugStop
-						Local tex:TTexture=LoadTexture(texFilename)
-						
-						If tex
-							BrushTexture brushes[i], tex	
-						EndIf
-						
-					EndIf
-					
-				EndIf
-				
-				i:+ 1
-			Next
-			
-			' Make mesh - was ProccessAiNodeAndChildren()
-			
-			Local mesh:TMesh = CreateMesh(parent)
-			
-			DebugLog "scene.numMeshes: " + scene.numMeshes
-			
-			For Local m:aiMesh = EachIn scene.meshes
-			
-				Local surf:TSurface = CreateSurface(mesh, brushes[m.MaterialIndex])
-				
-				' vertices, normals and texturecoords - was MakeAiMesh()
-				
-				For i = 0 To m.NumVertices - 1
-				
-					'DebugLog  m.VertexX(i) + ", " + m.VertexY(i) + ", " + m.VertexZ(i)
-					
-					Local index:Int
-					index = AddVertex(surf, m.VertexX(i), m.VertexY(i), m.VertexZ(i))
-					
-					If m.HasNormals()
-						VertexNormal(surf, index, m.VertexNX(i), m.VertexNY(i), m.VertexNZ(i))
-					EndIf
-					
-					If m.HasTextureCoords(0)
-						VertexTexCoords(surf, index, m.VertexU(i), m.VertexV(i), m.VertexW(i))
-					EndIf
-					
-					If m.HasTextureCoords(1)
-						VertexTexCoords(surf, index, m.VertexU(i, 1), m.VertexV(i, 1), m.VertexW(i, 1))
-					EndIf
-					
-				Next
-				
-				For i = 0 To m.NumFaces - 1
-				
-					'DebugLog  m.TriangleVertex(i,0) + " , "  + m.TriangleVertex(i,1) + " , "  + m.TriangleVertex(i,2)
-					
-					' this check is only in because assimp seems to be returning out of range indexes
-					' on rare occasions with aiProcess_PreTransformVertices on.
-					Local validIndex:Int = True
-					
-					' added 0.36 - fix for MAV when garbage index values < zero
-					'Rem
-					If m.TriangleVertex(i,0) < 0 Then validIndex = False
-					If m.TriangleVertex(i,1) < 0 Then validIndex = False
-					If m.TriangleVertex(i,2) < 0 Then validIndex = False
-					
-					If m.TriangleVertex(i,0) >=m.NumVertices Then validIndex = False
-					If m.TriangleVertex(i,1) >=m.NumVertices Then validIndex = False
-					If m.TriangleVertex(i,2) >=m.NumVertices Then validIndex = False
-					'EndRem
-					
-					If validIndex
-						AddTriangle(surf, m.TriangleVertex(i, 0), m.TriangleVertex(i, 1), m.TriangleVertex(i, 2))
-					Else
-						DebugLog "TriangleVertex index was out of range for triangle num: " + i
-						DebugLog "indexes: "+m.TriangleVertex(i, 0)+", "+m.TriangleVertex(i, 1)+", "+m.TriangleVertex(i, 2)
-					EndIf
-					
-				Next
-				
-			Next
-			
-			Return mesh	
-			
-		Else
-		
-			DebugLog "nothing imported"
-			
-		EndIf
-		
-		Scene.ReleaseImport()
-		
-	End Function
-		
-End Type
-
 Rem
  Non-essential helper functions which apply to all children of an entity:
  CountTrianglesAll:Int( mesh:TMesh )
@@ -517,7 +329,7 @@ EndRem
 		Local folder:Byte Ptr = ReadDir(dir)
 		Local file:String
 		
-		DebugLog "dir: " + dir
+		If TGlobal.Log_Assimp Then DebugLog "dir: " + dir
 		
 		Repeat
 			file = NextFile(folder)
@@ -528,15 +340,15 @@ EndRem
 				
 				If FileType(fullPath) = FILETYPE_DIR
 				
-					DebugLog "file: " + file
+					If TGlobal.Log_Assimp Then DebugLog "file: " + file
 					
 					'If(dir[0]) <> "."
 						EnumFiles(list, fullPath, skipExt)
 					'EndIf
 				Else
-					DebugLog "fullPath: " + fullPath
+					If TGlobal.Log_Assimp Then DebugLog "fullPath: " + fullPath
 					
-					If aiIsExtensionSupported("." + Lower(ExtractExt(fullPath)))
+					If IsExtensionSupported("." + Lower(ExtractExt(fullPath)))
 					
 						If Not skipExt.Contains(Lower(ExtractExt(fullPath))) ' Filter out formats
 							list.AddLast(fullPath)
@@ -554,3 +366,301 @@ EndRem
 	End Function
 	
 End Type
+
+' assimp mesh loader
+Type aiLoader
+
+	Function LoadMesh:TMesh(stream:TStream, url:Object, parent:TEntity=Null, flags:Int = -1)
+	
+		Local filename:String = String(url)
+		Local scene:aiScene = New aiScene
+		aiScene.Log_Assimp = TGlobal.Log_Assimp
+		
+		' removed, caused crash
+		'aiSetImportPropertyInteger(aipropertystore?, AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT )
+		
+		Select flags
+			Case -1 ' smooth shaded
+				flags = aiProcess_Triangulate | ..
+				aiProcess_GenSmoothNormals | ..
+				aiProcess_SortByPType | ..
+				aiProcess_PreTransformVertices | ..
+				aiProcess_ConvertToLeftHanded | ..
+				aiProcess_JoinIdenticalVertices
+			Case -2 ' flat shaded
+				flags = aiProcess_Triangulate | ..
+				aiProcess_GenNormals | ..
+				aiProcess_SortByPType | ..
+				aiProcess_PreTransformVertices | ..
+				aiProcess_ConvertToLeftHanded | ..
+				aiProcess_CalcTangentSpace | ..
+				aiProcess_FindDegenerates | ..
+				aiProcess_FindInvalidData | ..
+				aiProcess_GenUVCoords | ..
+				aiProcess_TransformUVCoords
+		EndSelect
+		
+		?ptr64
+		Local pointer:Long Ptr
+		?Not ptr64
+		Local pointer:Int Ptr
+		?
+		If stream = Null
+			pointer = scene.ImportFile(filename, flags)
+		Else
+			pointer = scene.ImportFileFromStream(stream, filename, flags)
+		EndIf
+		
+		If pointer <> Null
+		
+			' Make brushes
+			
+			Local brushes:TBrush[scene.NumMaterials]
+			Local i:Int
+			
+			For Local mat:aiMaterial = EachIn scene.Materials
+			
+				If TGlobal.Log_Assimp Then DebugLog " "
+				If TGlobal.Log_Assimp Then DebugLog " ----    Material Name " + mat.GetMaterialName()
+				If TGlobal.Log_Assimp Then DebugLog " ----    mat.IsTwoSided() " + mat.IsTwoSided()
+				If TGlobal.Log_Assimp Then DebugLog " ----    mat.GetShininess() " + mat.GetShininess()
+				If TGlobal.Log_Assimp Then DebugLog " ----    mat.GetAlpha() " + mat.GetAlpha()
+				
+				'Rem
+				Local names:String[] = mat.GetPropertyNames()
+				
+				For Local s:String = EachIn names
+				
+					If TGlobal.Log_Assimp Then DebugLog "Property: *" + s + "*"
+					'DebugLog "matbase " + mat.Properties[?].GetFloatValue(s)
+					
+					Select s
+						Case AI_MATKEY_TEXTURE_BASE
+							If TGlobal.Log_Assimp Then DebugLog "matbase " +  mat.GetMaterialString(s)
+					End Select
+					
+				Next
+				'EndRem
+				
+				Local DiffuseColors:Float[] = mat.GetMaterialColor(AI_MATKEY_COLOR_DIFFUSE)	
+				
+				brushes[i] = CreateBrush(mat.GetDiffuseRed() * 255,mat.GetDiffuseGreen() * 255,mat.GetDiffuseBlue() * 255)
+				
+				' seems alpha comes in different places denpending om model format.
+				' seems wavefront obj alpha doesn't load
+				'BrushAlpha brushes[i],mat.GetAlpha()' * mat.GetDiffuseAlpha() (might be 0 so not good)
+				
+				BrushShininess brushes[i],mat.GetShininess()
+				
+				If mat.IsTwoSided()
+					'BrushFX brushes[i], 16
+				EndIf
+				
+				Local texFilename:String = mat.GetMaterialTexture()
+				
+				If TGlobal.Log_Assimp Then DebugLog "TEXTURE filename: " + texFilename
+				
+				If Len(texFilename)
+				
+					' remove currentdir prefix, but leave relative subfolder path intact
+					If  texFilename[..2] = ".\" Or texFilename[..2] = "./"
+						texFilename = texFilename[2..]
+					EndIf
+					
+					'assume the texture names are stored relative to the file
+					texFilename  = ExtractDir(filename) + "/" + texFilename
+					
+					If Not FileType(texFilename)
+						texFilename = ExtractDir(filename) + "/" + StripDir(texFilename)
+					EndIf
+					
+					If TGlobal.Log_Assimp Then DebugLog texFilename
+					
+					'If FileType(texFilename)
+						'DebugStop
+					Local tex:TTexture=LoadTexture(texFilename, TGlobal.Texture_Flags)
+					
+					If tex Then BrushTexture brushes[i], tex	
+					
+					'EndIf
+					
+				EndIf
+				
+				i:+ 1
+			Next
+			
+			' Make mesh - was ProccessAiNodeAndChildren()
+			
+			'Local mesh:TMesh = CreateMesh(parent)
+			Local mesh:TMesh = NewMesh()
+			mesh.SetString(mesh.name,"ROOT")
+			mesh.SetString(mesh.class_name,"Mesh")
+			mesh.AddParent(parent)
+			mesh.EntityListAdd(TEntity.entity_list)
+			
+			If TGlobal.Log_Assimp Then DebugLog "scene.numMeshes: " + scene.numMeshes
+			
+			For Local m:aiMesh = EachIn scene.meshes
+			
+				
+				Local surf:TSurface = CreateSurface(mesh, brushes[m.MaterialIndex])
+				
+				' vertices, normals and texturecoords - was MakeAiMesh()
+				
+				For i = 0 To m.NumVertices - 1
+				
+					'DebugLog  m.VertexX(i) + ", " + m.VertexY(i) + ", " + m.VertexZ(i)
+					
+					Local index:Int
+					index = AddVertex(surf, m.VertexX(i), m.VertexY(i), m.VertexZ(i))
+					
+					If m.HasNormals()
+						VertexNormal(surf, index, m.VertexNX(i), m.VertexNY(i), m.VertexNZ(i))
+					EndIf
+					
+					If m.HasTextureCoords(0)
+						VertexTexCoords(surf, index, m.VertexU(i), m.VertexV(i), m.VertexW(i))
+					EndIf
+					
+					If m.HasTextureCoords(1)
+						VertexTexCoords(surf, index, m.VertexU(i, 1), m.VertexV(i, 1), m.VertexW(i, 1))
+					EndIf
+					
+				Next
+				
+				For i = 0 To m.NumFaces - 1
+				
+					'DebugLog  m.TriangleVertex(i,0) + " , "  + m.TriangleVertex(i,1) + " , "  + m.TriangleVertex(i,2)
+					
+					' this check is only in because assimp seems to be returning out of range indexes
+					' on rare occasions with aiProcess_PreTransformVertices on.
+					Local validIndex:Int = True
+					
+					' added 0.36 - fix for MAV when garbage index values < zero
+					'Rem
+					If m.TriangleVertex(i,0) < 0 Then validIndex = False
+					If m.TriangleVertex(i,1) < 0 Then validIndex = False
+					If m.TriangleVertex(i,2) < 0 Then validIndex = False
+					
+					If m.TriangleVertex(i,0) >=m.NumVertices Then validIndex = False
+					If m.TriangleVertex(i,1) >=m.NumVertices Then validIndex = False
+					If m.TriangleVertex(i,2) >=m.NumVertices Then validIndex = False
+					'EndRem
+					
+					If validIndex
+						AddTriangle(surf, m.TriangleVertex(i, 0), m.TriangleVertex(i, 1), m.TriangleVertex(i, 2))
+					Else
+						If TGlobal.Log_Assimp Then DebugLog "TriangleVertex index was out of range for triangle num: " + i
+						If TGlobal.Log_Assimp Then DebugLog "indexes: "+m.TriangleVertex(i, 0)+", "+m.TriangleVertex(i, 1)+", "+m.TriangleVertex(i, 2)
+					EndIf
+					
+				Next
+				
+			Next
+			
+			Return mesh	
+			
+		Else
+		
+			If TGlobal.Log_Assimp Then DebugLog "nothing imported"
+			
+		EndIf
+		
+		Scene.ReleaseImport()
+		
+	End Function
+		
+End Type
+
+Type TMeshLoaderAssimp Extends TMeshLoader
+	
+	Method CanLoadMesh:Int(extension:String)
+	
+		Return IsExtensionSupported(extension.ToLower())
+		
+	End Method
+	
+	Method LoadMesh:TMesh(file:TStream, url:Object, parent:TEntity = Null)
+	
+		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 4)) Then Return Null
+		
+		Local anim_mesh:TMesh=aiLoader.LoadMesh( Null, url, parent, TGlobal.Mesh_Flags )
+		
+		If anim_mesh=Null Then Return Null
+		anim_mesh.HideEntity()
+		Local mesh:TMesh=anim_mesh.CollapseAnimMesh()
+		anim_mesh.FreeEntity()
+		
+		mesh.SetString(mesh.class_name,"Mesh")
+		mesh.AddParent(parent)
+		mesh.EntityListAdd(TEntity.entity_list)
+		
+		' update matrix
+		If mesh.parent<>Null
+			mesh.mat.Overwrite(mesh.parent.mat)
+			mesh.UpdateMat()
+		Else
+			mesh.UpdateMat(True)
+		EndIf
+		
+		Return mesh
+		
+	End Method
+	
+	Method LoadAnimMesh:TMesh(file:TStream, url:Object, parent:TEntity = Null)
+	
+		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 4)) Then Return Null
+		
+		Return aiLoader.LoadMesh( Null, url, parent, TGlobal.Mesh_Flags )
+		
+	End Method
+	
+End Type
+
+Type TMeshLoaderAssimpStream Extends TMeshLoader
+	
+	Method CanLoadMesh:Int(extension:String)
+	
+		Return IsExtensionSupported(extension.ToLower())
+		
+	End Method
+	
+	Method LoadMesh:TMesh(file:TStream, url:Object, parent:TEntity = Null)
+	
+		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 8)) Then Return Null
+		
+		Local anim_mesh:TMesh=aiLoader.LoadMesh( file, url, parent, TGlobal.Mesh_Flags )
+		
+		If anim_mesh=Null Then Return Null
+		anim_mesh.HideEntity()
+		Local mesh:TMesh=anim_mesh.CollapseAnimMesh()
+		anim_mesh.FreeEntity()
+		
+		mesh.SetString(mesh.class_name,"Mesh")
+		mesh.AddParent(parent)
+		mesh.EntityListAdd(TEntity.entity_list)
+		
+		' update matrix
+		If mesh.parent<>Null
+			mesh.mat.Overwrite(mesh.parent.mat)
+			mesh.UpdateMat()
+		Else
+			mesh.UpdateMat(True)
+		EndIf
+		
+		Return mesh
+		
+	End Method
+	
+	Method LoadAnimMesh:TMesh(file:TStream, url:Object, parent:TEntity = Null)
+	
+		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 8)) Then Return Null
+		
+		Return aiLoader.LoadMesh( file, url, parent, TGlobal.Mesh_Flags )
+		
+	End Method
+	
+End Type
+
+New TMeshLoaderAssimp
+New TMeshLoaderAssimpStream

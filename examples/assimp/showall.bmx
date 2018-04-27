@@ -3,7 +3,7 @@
 
 Strict
 
-Framework Openb3dmax.Openb3d
+Framework Openb3dmax.B3dglgraphics
 Import Openb3dmaxlibs.Assimp
 
 Graphics3D DesktopWidth(),DesktopHeight(),0,2
@@ -26,6 +26,9 @@ Local path$
 path = "../../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
+'TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "assimp" ' use assimp from file
+
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")
 'skipExt.addlast("blend")
@@ -37,14 +40,14 @@ If FileSize(path)=-1 Then Print "Error: path not found"
 Local test%=0
 Select test
 	Case 0 ' load all formats
-		aiEnumFiles( filelist,path,skipExt )
+		EnumFiles( filelist,path,skipExt )
 	Case 1 ' specify a format
-		aiEnumFiles( filelist,path+"/OBJ",skipExt )
+		EnumFiles( filelist,path+"/OBJ",skipExt )
 	Case 2 ' use current directory
-		aiEnumFiles( filelist,"./",skipExt )
+		EnumFiles( filelist,"./",skipExt )
 	Case 3 ' use file requester
 		path=RequestDir( "Select a Folder",CurrentDir() )
-		If FileType(path$) = 2 Then aiEnumFiles( filelist,path,skipExt )
+		If FileType(path$) = 2 Then EnumFiles( filelist,path,skipExt )
 End Select
 
 Local filearray:Object[] = filelist.Toarray()
@@ -69,6 +72,7 @@ Local slideDuration:Int = 1000
 Local slideshow:Int = False
 
 Local currentFile:String = "Press space to load the next model"
+Local count_children%
 
 ' used by fps code
 Local old_ms%=MilliSecs()
@@ -90,18 +94,20 @@ While Not KeyDown(KEY_ESCAPE)
 			fileNUmber = 0
 		EndIf
 
-		DebugLog String(filearray[fileNUmber])
-
-		If aiIsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
-
+		DebugLog "file="+String(filearray[fileNUmber])
+		
+		If IsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
 			currentFile = String(filearray[fileNUmber])
 			If mesh Then FreeEntity mesh ; mesh = Null
-			mesh = aiLoadMesh( String(filearray[fileNUmber]) )
+			
+			mesh = LoadAnimMesh( String(filearray[fileNUmber]) )
 			
 			If mesh
 				'EntityPickMode( mesh,2 )
-				aiFitAnimMesh mesh,-100,-100,-100,200,200,200,True	
+				FitAnimMesh mesh,-100,-100,-100,200,200,200,True	
 				'FitMesh mesh,-100,-100,-100,200,200,200,True
+				
+				count_children=TEntity.CountAllChildren(mesh)
 			EndIf
 		EndIf
 		
@@ -128,8 +134,9 @@ While Not KeyDown(KEY_ESCAPE)
 		renders=0
 	EndIf
 	
-	Text 0,20,fileNUmber + "/" + filearray.length + " " + StripDir(currentFile)
+	Text 0,20,"fileNUmber="+fileNUmber + "/" + filearray.length + " " + StripDir(currentFile)
 	Text 0,40,"FPS: "+fps+", Tri count: "+aiHelper.CountTrianglesAll(mesh)
+	Text 0,60,"Children: "+count_children
 	
 	Flip
 	

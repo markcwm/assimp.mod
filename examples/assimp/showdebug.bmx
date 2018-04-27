@@ -2,7 +2,7 @@
 
 Strict
 
-Framework Openb3dmax.Openb3d
+Framework Openb3dmax.B3dglgraphics
 Import Openb3dmaxlibs.Assimp
 
 'Include "typeslib.bmx"
@@ -23,39 +23,42 @@ HideEntity sphere
 Local path$ = "../../assimplib.mod/assimp/test/models"
 Local ent:TMesh
 
+TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "assimp"
+
 Local test%=2
 Select test
 	Case 1
 		Local time:Int=MilliSecs()
 		Local file:String = "../media/zombie.b3d"
-		ent = aiLoader.LoadMesh(file, Null, -2)
+		ent = aiLoader.LoadMesh(Null, file)
 		DebugLog "assimp time="+(time-MilliSecs())
 		
 	Case 2
 		Local file:String = path + "/3DS/cubes_with_alpha.3DS"
-		ent = aiLoader.LoadMesh(file)
+		ent = aiLoader.LoadMesh(Null, file)
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	' debugging
 	Case 2 ' model trouble
 		DebugLog "modeltrouble test:"
-		ent=aiLoader.LoadMesh("modeltrouble/assimp301/house.dae")
+		ent=aiLoader.LoadMesh(Null, "modeltrouble/assimp301/house.dae")
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 3
 		DebugLog "modeltrouble test:"
-		ent=aiLoader.LoadMesh("modeltrouble/assimp303/model.obj")
+		ent=aiLoader.LoadMesh(Null, "modeltrouble/assimp303/model.obj")
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 4 ' ascii cob bug test
 		DebugLog "cob test:"
-		ent=aiLoader.LoadMesh(path+"COB/dwarf_ascii.cob")
+		ent=aiLoader.LoadMesh(Null, path+"COB/dwarf_ascii.cob")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 5
 		DebugLog "cob test:"
-		ent=aiLoader.LoadMesh(path+"COB/molecule_ascii.cob")
+		ent=aiLoader.LoadMesh(Null, path+"COB/molecule_ascii.cob")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
@@ -63,13 +66,13 @@ Select test
 		' error: terminate called after throwing an instance of 'Assimp::Blender::Error'
 		' what(): BlendDNA: Did not find a field named `angle` in structure `Camera`
 		DebugLog "blend test:"
-		ent=aiLoader.LoadMesh(path+"BLEND/4Cubes4Mats_248.blend")
+		ent=aiLoader.LoadMesh(Null, path+"BLEND/4Cubes4Mats_248.blend")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 7
 		DebugLog "blend test:"
-		ent=aiLoader.LoadMesh(path+"BLEND/blender_269_regress1.blend")
+		ent=aiLoader.LoadMesh(Null, path+"BLEND/blender_269_regress1.blend")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		

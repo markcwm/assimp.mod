@@ -3,7 +3,7 @@
 
 Strict
 
-Framework Openb3dmax.Openb3d
+Framework Openb3dmax.B3dglgraphics
 Import Openb3dmaxlibs.Assimp
 
 Graphics3D DesktopWidth(),DesktopHeight(),0,2
@@ -26,6 +26,9 @@ Local path$
 path = "../../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
+'TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "assimpstream" ' use assimp from stream
+
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")
 'skipExt.addlast("blend")
@@ -37,14 +40,14 @@ If FileSize(path)=-1 Then Print "Error: path not found"
 Local test%=0
 Select test
 	Case 0 ' load all formats
-		aiEnumFiles( filelist,path,skipExt )
+		EnumFiles( filelist,path,skipExt )
 	Case 1 ' specify a format
-		aiEnumFiles( filelist,path+"/OBJ",skipExt )
+		EnumFiles( filelist,path+"/OBJ",skipExt )
 	Case 2 ' use current directory
-		aiEnumFiles( filelist,"./",skipExt )
+		EnumFiles( filelist,"./",skipExt )
 	Case 3 ' use file requester
 		path=RequestDir( "Select a Folder",CurrentDir() )
-		If FileType(path$) = 2 Then aiEnumFiles( filelist,path,skipExt )
+		If FileType(path$) = 2 Then EnumFiles( filelist,path,skipExt )
 End Select
 
 Local filearray:Object[] = filelist.Toarray()
@@ -59,8 +62,8 @@ Local sp:TMesh = CreateSphere()
 'ScaleEntity sp,24,24,24
 'EntityAlpha sp,0.4
 
-Local mainEnt:TMesh = CreateCube()
-PointEntity cam,mainEnt
+Local mesh:TMesh = CreateCube()
+PointEntity cam,mesh
 
 ' slideshow
 Local go:Int = 1
@@ -69,6 +72,7 @@ Local slideDuration:Int = 2000
 Local slideshow:Int = False
 
 Local currentModel:String = "Press space to load the next model"
+Local count_children%
 
 ' used by fps code
 Local old_ms%=MilliSecs()
@@ -85,31 +89,31 @@ While Not KeyDown(KEY_ESCAPE)
 	
 	' hierarchy functions
 	If KeyHit(KEY_X)
-		aiHelper.RotateEntityAxisAll( mainEnt,1 )
+		aiHelper.RotateEntityAxisAll( mesh,1 )
 	EndIf
 	If KeyHit(KEY_Y)
-		aiHelper.RotateEntityAxisAll( mainEnt,2 )
+		aiHelper.RotateEntityAxisAll( mesh,2 )
 	EndIf
 	If KeyHit(KEY_Z)
-		aiHelper.RotateEntityAxisAll( mainEnt,3 )
+		aiHelper.RotateEntityAxisAll( mesh,3 )
 	EndIf
 	
 	If KeyHit(KEY_U)
-		aiHelper.UpdateNormalsAll( mainEnt )
+		aiHelper.UpdateNormalsAll( mesh )
 	EndIf
 	
 	If KeyHit(KEY_F)
-		aiHelper.FlipMeshAll( mainEnt )
+		aiHelper.FlipMeshAll( mesh )
 	EndIf
 	
 	If KeyHit(KEY_1)
-		aiHelper.ScaleMeshAxisAll( mainEnt,1 )
+		aiHelper.ScaleMeshAxisAll( mesh,1 )
 	EndIf
 	If KeyHit(KEY_2)
-		aiHelper.ScaleMeshAxisAll( mainEnt,2 )
+		aiHelper.ScaleMeshAxisAll( mesh,2 )
 	EndIf
 	If KeyHit(KEY_3)
-		aiHelper.ScaleMeshAxisAll( mainEnt,3 )
+		aiHelper.ScaleMeshAxisAll( mesh,3 )
 	EndIf
 	
 	If KeyHit(KEY_SPACE) Or go = 1
@@ -119,15 +123,19 @@ While Not KeyDown(KEY_ESCAPE)
 			fileNUmber = 0
 		EndIf
 		
-		DebugLog String(filearray[fileNUmber])
+		DebugLog "file="+String(filearray[fileNUmber])
 		
-		If aiIsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
-		
+		If IsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
 			currentModel = String(filearray[fileNUmber])
-			If mainEnt Then FreeEntity mainEnt ; mainEnt = Null
-			mainEnt = aiLoadMesh( String(filearray[fileNUmber]) )
-			If mainEnt Then aiFitAnimMesh mainEnt,-100,-100,-100,200,200,200,True	
+			If mesh Then FreeEntity mesh ; mesh = Null
 			
+			mesh = LoadAnimMesh( String(filearray[fileNUmber]) )
+			
+			If mesh
+				FitAnimMesh mesh,-100,-100,-100,200,200,200,True
+				
+				count_children=TEntity.CountAllChildren(mesh)
+			EndIf
 		EndIf
 		
 		lastslideTime = MilliSecs()
@@ -135,8 +143,8 @@ While Not KeyDown(KEY_ESCAPE)
 		
 	EndIf
 	
-	If mainEnt
-		TurnEntity mainEnt,0,1,0
+	If mesh
+		TurnEntity mesh,0,1,0
 	EndIf
 	
 	' control camera
@@ -147,16 +155,17 @@ While Not KeyDown(KEY_ESCAPE)
 	
 	' calculate fps
 	renders=renders+1
-	If MilliSecs()-old_ms>=1000
+	If Abs(MilliSecs() - old_ms) >= 1000
 		old_ms=MilliSecs()
 		fps=renders
 		renders=0
 	EndIf
 	
-	Text 0,20,fileNUmber+"/"+filearray.length+" "+StripDir(currentModel)
-	Text 0,40,"FPS: "+fps+", Tri count: "+aiHelper.CountTrianglesAll(mainEnt)
+	Text 0,20,"fileNUmber="+fileNUmber+"/"+filearray.length+" "+StripDir(currentModel)
+	Text 0,40,"FPS: "+fps+", Tri count: "+aiHelper.CountTrianglesAll(mesh)
 	Text 0,60,"Space: next model, X,Y,Z: rotate entity on axis, "
 	Text 0,80,"U: update normals, F: flip mesh faces, 1,2,3: scale mesh on axis"
+	Text 0,100,"Children: "+count_children
 	
 	Flip
 	

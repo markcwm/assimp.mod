@@ -37,11 +37,11 @@ Reads the given file and returns its content.
 <tr><td class=docleft width=1%><a href=#aiImportFileFromMemory>aiImportFileFromMemory</a></td><td class=docright>
 Reads the given file from a given memory buffer.
 </td></tr>
-<tr><td class=docleft width=1%><a href=#aiIsExtensionSupported>aiIsExtensionSupported</a></td><td class=docright>
-Returns the error text of the last failed import process.
-</td></tr>
 <tr><td class=docleft width=1%><a href=#aiReleaseImport>aiReleaseImport</a></td><td class=docright>
 Releases all resources associated with the given import process.
+</td></tr>
+<tr><td class=docleft width=1%><a href=#IsExtensionSupported>IsExtensionSupported</a></td><td class=docright>
+Returns the error text of the last failed import process.
 </td></tr>
 </table>
 <h2><a name=types></a>Types Summary</h2><table class=doc width=100%>
@@ -108,16 +108,16 @@ and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.</td></tr>
 </table>
 <br>
-<table class=doc width=100% cellspacing=3 id=aiIsExtensionSupported>
-<tr><td class=doctop colspan=2>Function aiIsExtensionSupported:Int( pFile:String )</td></tr>
-<tr><td class=docleft width=1%>Description</td><td class=docright>Returns the error text of the last failed import process.</td></tr>
+<table class=doc width=100% cellspacing=3 id=aiReleaseImport>
+<tr><td class=doctop colspan=2>Function aiReleaseImport( pScene:Byte Ptr )</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Releases all resources associated with the given import process.</td></tr>
 <tr><td class=docleft width=1%>Information</td><td class=docright>See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.</td></tr>
 </table>
 <br>
-<table class=doc width=100% cellspacing=3 id=aiReleaseImport>
-<tr><td class=doctop colspan=2>Function aiReleaseImport( pScene:Byte Ptr )</td></tr>
-<tr><td class=docleft width=1%>Description</td><td class=docright>Releases all resources associated with the given import process.</td></tr>
+<table class=doc width=100% cellspacing=3 id=IsExtensionSupported>
+<tr><td class=doctop colspan=2>Function IsExtensionSupported:Int( pFile:String )</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>Returns the error text of the last failed import process.</td></tr>
 <tr><td class=docleft width=1%>Information</td><td class=docright>See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.</td></tr>
 </table>
@@ -145,7 +145,7 @@ A mesh uses only a single material which is referenced by a material ID.
 <br>
 <h2 id=modinfo>Module Information</h2>
 <table width=100%>
-<tr><th width=1%>Version</th><td>0.41</td></tr>
+<tr><th width=1%>Version</th><td>0.42</td></tr>
 <tr><th width=1%>License</th><td>BSD-3-Clause</td></tr>
 <tr><th width=1%>Copyright</th><td>Wrapper - 2009-2018 Peter Scheutz</td></tr>
 <tr><th width=1%>Copyright</th><td>Library - 2006-2012 Assimp team</td></tr>

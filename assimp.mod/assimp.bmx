@@ -11,7 +11,7 @@ To get BaH.Boost with Subversion open command-line and be sure you "cd" to bah.m
 End Rem
 Module Openb3dmaxlibs.Assimp
 
-ModuleInfo "Version: 0.41"
+ModuleInfo "Version: 0.42"
 ModuleInfo "License: BSD-3-Clause"
 ModuleInfo "Copyright: Wrapper - 2009-2018 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
@@ -20,28 +20,21 @@ ModuleInfo "Source: svn checkout https://github.com/maxmods/bah.mod/trunk/boost.
 ModuleInfo "Source: https://github.com/maxmods/koriolis.mod"
 ModuleInfo "Source: https://github.com/assimp/assimp"
 
-Import Openb3dmax.B3dglgraphics
+Import Openb3dmax.Openb3dmax
 Import Openb3dmaxlibs.Assimplib
 
 Include "types.bmx"
 
 Rem
-bbdoc: Like <a href="http://www.blitzbasic.com/b3ddocs/command.php?name=LoadMesh">LoadMesh</a> but without a parent parameter.
+bbdoc: FitMesh for meshes with children.
 End Rem
-Function aiLoadMesh:TMesh( filename:String, parent:TEntity=Null, flags:Int = -1 )
-	Return aiLoader.LoadMesh( filename, parent, flags )
-End Function
-
-Rem
-bbdoc: Like <a href="http://www.blitzbasic.com/b3ddocs/command.php?name=LoadMesh">FitMesh</a>.
-End Rem
-Function aiFitAnimMesh( m:TEntity, x#, y#, z#, w#, h#, d#, uniform:Int=False )
+Function FitAnimMesh( m:TEntity, x#, y#, z#, w#, h#, d#, uniform:Int=False )
 	aiHelper.FitAnimMesh( m, x, y, z, w, h, d, uniform )
 End Function
 
 Rem
 bbdoc: Creates a list of valid files to load.
 EndRem
-Function aiEnumFiles( list:TList, dir:String, skipExt:TList )
+Function EnumFiles( list:TList, dir:String, skipExt:TList )
 	aiHelper.EnumFiles( list, dir, skipExt )
 End Function

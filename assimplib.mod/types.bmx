@@ -238,11 +238,11 @@ Type aiMaterial
 		
 			names[id] = Properties[id].mKey
 			
-			DebugLog "Property name: " + Properties[id].mKey
-			DebugLog "Property type: " + Properties[id].mType
-			DebugLog "Property Index " + Properties[id].Index
-			DebugLog "Property length " + Properties[id].DataLength
-			DebugLog "Property Semantic: " + Properties[id].Semantic
+			If aiScene.Log_Assimp Then DebugLog "Property name: " + Properties[id].mKey
+			If aiScene.Log_Assimp Then DebugLog "Property type: " + Properties[id].mType
+			If aiScene.Log_Assimp Then DebugLog "Property Index " + Properties[id].Index
+			If aiScene.Log_Assimp Then DebugLog "Property length " + Properties[id].DataLength
+			If aiScene.Log_Assimp Then DebugLog "Property Semantic: " + Properties[id].Semantic
 			
 			Select Properties[id].mType
 				Case aiPTI_Float
@@ -322,7 +322,7 @@ Type aiMaterial
 		If retVal = AI_SUCCESS			
 			Return String.FromCString(Varptr s[4 * PAD])
 		Else
-			DebugLog "mat. GetMaterialTexture failed with code " + retVal
+			If aiScene.Log_Assimp Then DebugLog "mat. GetMaterialTexture failed with code " + retVal
 		EndIf
 		
 	End Method
@@ -604,7 +604,7 @@ Type aiNode
 				
 		node.name = String.FromCString(pointer + (4 * PAD))
 		
-		DebugLog "Nodename " + node.name
+		If aiScene.Log_Assimp Then DebugLog "Nodename " + node.name
 		
 		node.transformation = aiMatrix4x4.Create(Float Ptr (Byte Ptr pointer + MAXLEN + (4 * PAD)))
 		
@@ -621,7 +621,7 @@ Type aiNode
 		'Rem
 		node.NumMeshes = pBase[3] ' int 3/6
 		
-		DebugLog "Mesh count for this node: " + node.NumMeshes
+		If aiScene.Log_Assimp Then DebugLog "Mesh count for this node: " + node.NumMeshes
 		
 		?ptr64
 		Local pMeshIndexArray:Long Ptr = Long Ptr pBase[4] ' ptr 4/8
@@ -639,7 +639,7 @@ Type aiNode
 		' get child nodes
 		node.NumChildren = pBase[1] ' int 1/2
 		
-		DebugLog "node.NumChildren=" + node.NumChildren
+		If aiScene.Log_Assimp Then DebugLog "node.NumChildren=" + node.NumChildren
 		
 		If node.NumChildren
 			?ptr64
@@ -667,6 +667,8 @@ End Type
 
 Type aiScene
 
+	Global Log_Assimp:Int=False		' True to DebugLog Assimp
+	
 	?ptr64
 	Field pointer:Long Ptr
 	?Not ptr64
@@ -680,42 +682,21 @@ Type aiScene
 	Field materials:aiMaterial[]
 	
 	?ptr64
-	Method ImportFile:Long Ptr(fileName:String, readflags:Int)
+	Method ImportFileFromStream:Long Ptr(stream:TStream, url:Object, readflags:Int)
 	?Not ptr64
-	Method ImportFile:Int Ptr(fileName:String, readflags:Int)
+	Method ImportFileFromStream:Int Ptr(stream:TStream, url:Object, readflags:Int)
 	?
-		If (Left(filename, 5) = "zip::") ' load zip mesh (ram stream by Pertubatio)
+		Local filename:String = String(url)
+		Local ext:String = filename[filename.FindLast(".")+1..]
+		Local bufLen:Int = StreamSize(stream)
+		Local buffer:Byte Ptr = MemAlloc(bufLen+1)
+		Local ram:TRamStream = CreateRamStream(buffer, bufLen, True, True)
+		CopyStream(stream, ram)
 		
-			Local fileStream:TStream = CreateBufferedStream(fileName)
-			Local bufLen:Int = StreamSize(fileStream)
-			Local buffer:Byte Ptr = MemAlloc(bufLen)
-			Local ramStream:TRamStream = CreateRamStream(buffer, bufLen, True, True)
-			CopyStream(fileStream, ramStream)
-			
-			pointer = aiImportFileFromMemory(buffer, bufLen, readFlags, Right(fileName, 3))
-			
-			MemFree(buffer)
-			CloseStream(fileStream)
-			CloseStream(ramStream)
-			
-		ElseIf (Left(filename, 8) = "incbin::") ' load incbin mesh by Happy Cat - Jan 2013
+		pointer = aiImportFileFromMemory(buffer, bufLen, readflags, ext)
 		
-			Local binName:String = Mid(filename, 9)
-			Local buffer:Byte Ptr = IncbinPtr(binName)
-			Local bufLen:Int = IncbinLen(binName)
-			If (buffer = Null Or bufLen = 0) Then Return Null
-			
-			pointer = aiImportFileFromMemory(buffer, bufLen, readFlags, Right(fileName, 3))
-		Else
-		
-			?win32
-			' TODO this is a fix for wavefront mtl not being found
-			' does this mess up UNC paths or something else?
-			filename = filename.Replace("/", "\")
-			?
-			
-			pointer = aiImportFile(filename, readflags)
-		EndIf
+		CloseStream(ram)
+		MemFree(buffer)
 		
 		If pointer <> Null
 			flags = pointer[0]
@@ -735,10 +716,10 @@ Type aiScene
 			
 			meshes = meshes[..numMeshes]
 			
-			DebugLog "flags = " + flags
-			DebugLog "rootNode.pointer = " + rootNode.pointer
-			DebugLog "numMeshes = " + numMeshes
-			DebugLog "pMeshArray = " + pMeshArray
+			If aiScene.Log_Assimp Then DebugLog "flags = " + flags
+			If aiScene.Log_Assimp Then DebugLog "rootNode.pointer = " + rootNode.pointer
+			If aiScene.Log_Assimp Then DebugLog "numMeshes = " + numMeshes
+			If aiScene.Log_Assimp Then DebugLog "pMeshArray = " + pMeshArray
 			
 			For Local id:Int = 0 To numMeshes - 1
 			
@@ -763,11 +744,11 @@ Type aiScene
 				meshes[id].pTangents = Byte Ptr pMesh[4 + ONE32] ' 5/8
 				meshes[id].pBitangents = Byte Ptr pMesh[5 + ONE32] ' 6/10 - [(5 * PAD) + ONE32]
 				
-				DebugLog "meshes[" + id + "].PrimitiveTypes = " + meshes[id].PrimitiveTypes 
-				DebugLog "meshes[" + id + "].NumVertices = " + meshes[id].NumVertices 
-				DebugLog "meshes[" + id + "].NumFaces = " + meshes[id].NumFaces 
-				DebugLog "meshes[" + id + "].pVertices = " + meshes[id].pVertices 
-				DebugLog "meshes[" + id + "].pNormals = " + meshes[id].pNormals 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].PrimitiveTypes = " + meshes[id].PrimitiveTypes 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumVertices = " + meshes[id].NumVertices 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumFaces = " + meshes[id].NumFaces 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pVertices = " + meshes[id].pVertices 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pNormals = " + meshes[id].pNormals 
 				'DebugLog "meshes[" + id + "].pTangents = " + meshes[id].pTangents 
 				'DebugLog "meshes[" + id + "].pBitangents = " + meshes[id].pBitangents 
 				
@@ -811,10 +792,10 @@ Type aiScene
 				'	DebugLog "meshes[id].pFaces " + n + "="+meshes[id].pFaces[n]
 				'Next
 				
-				DebugLog "meshes[" + id + "].pFaces = " + meshes[id].pFaces
-				DebugLog "meshes[" + id + "].NumBones = " + meshes[id].NumBones 
-				DebugLog "meshes[" + id + "].pBones = " + meshes[id].pBones 
-				DebugLog "meshes[" + id + "].MaterialIndex = " + meshes[id].MaterialIndex
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pFaces = " + meshes[id].pFaces
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumBones = " + meshes[id].NumBones 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pBones = " + meshes[id].pBones 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].MaterialIndex = " + meshes[id].MaterialIndex
 			Next
 			
 			NumMaterials = pointer[4] ' 4/8
@@ -827,11 +808,11 @@ Type aiScene
 			
 			materials = materials[..NumMaterials]
 			
-			DebugLog "NumMaterials = " + NumMaterials
-			DebugLog "pMaterialArray = " + pMaterialArray
+			If aiScene.Log_Assimp Then DebugLog "NumMaterials = " + NumMaterials
+			If aiScene.Log_Assimp Then DebugLog "pMaterialArray = " + pMaterialArray
 			
 			For Local id:Int = 0 To NumMaterials - 1 
-				DebugLog "Material found"
+				If aiScene.Log_Assimp Then DebugLog "Material found"
 				
 				materials[id] = New aiMaterial
 				?ptr64
@@ -854,7 +835,198 @@ Type aiScene
 				?
 				
 				For Local pid:Int = 0 To materials[id].NumProperties - 1
-					DebugLog "Materialproperty found"
+					If aiScene.Log_Assimp Then DebugLog "Materialproperty found"
+					
+					materials[id].Properties[pid] = aiMaterialProperty.Create(Byte Ptr pMaterialPropertyArray[pid])
+				Next
+				'EndRem
+			Next
+			
+		EndIf
+		
+		Return pointer
+		
+	End Method
+	
+	?ptr64
+	Method ImportFile:Long Ptr(url:Object, readflags:Int)
+	?Not ptr64
+	Method ImportFile:Int Ptr(url:Object, readflags:Int)
+	?
+		Local filename:String = String(url)
+		Local ext:String = filename[filename.FindLast(".")+1..]
+		
+		If (Left(filename, 5) = "zip::") ' load zip mesh (ram stream by Pertubatio)
+		
+			Local stream:TStream = CreateBufferedStream(filename)
+			Local bufLen:Int = StreamSize(stream)
+			Local buffer:Byte Ptr = MemAlloc(bufLen)
+			Local ram:TRamStream = CreateRamStream(buffer, bufLen, True, True)
+			CopyStream(stream, ram)
+			
+			pointer = aiImportFileFromMemory(buffer, bufLen, readflags, ext)
+			
+			MemFree(buffer)
+			CloseStream(stream)
+			CloseStream(ram)
+			
+		ElseIf (Left(filename, 8) = "incbin::") ' load incbin mesh by Happy Cat - Jan 2013
+		
+			Local binName:String = Mid(filename, 9)
+			Local buffer:Byte Ptr = IncbinPtr(binName)
+			Local bufLen:Int = IncbinLen(binName)
+			If (buffer = Null Or bufLen = 0) Then Return Null
+			
+			pointer = aiImportFileFromMemory(buffer, bufLen, readflags, ext)
+			
+		Else
+			' TODO this is a fix for wavefront mtl not being found
+			' does this mess up UNC paths or something else?
+			?win32
+			filename = filename.Replace("/", "\")
+			?
+			pointer = aiImportFile(filename, readflags)
+			
+		EndIf
+		
+		If pointer <> Null
+			flags = pointer[0]
+			
+			'For Local n:Int = 0 To 23
+			'	DebugLog "pointer " + n + "=" + pointer[n]
+			'Next
+			
+			rootNode = aiNode.Create(Byte Ptr pointer[1]) ' 1/2
+			numMeshes = pointer[2] ' 2/4
+			
+			?ptr64
+			Local pMeshArray:Long Ptr = Long Ptr pointer[3] ' 3/6
+			?Not ptr64
+			Local pMeshArray:Int Ptr = Int Ptr pointer[3] ' 3/6
+			?
+			
+			meshes = meshes[..numMeshes]
+			
+			If aiScene.Log_Assimp Then DebugLog "flags = " + flags
+			If aiScene.Log_Assimp Then DebugLog "rootNode.pointer = " + rootNode.pointer
+			If aiScene.Log_Assimp Then DebugLog "numMeshes = " + numMeshes
+			If aiScene.Log_Assimp Then DebugLog "pMeshArray = " + pMeshArray
+			
+			For Local id:Int = 0 To numMeshes - 1
+			
+				Local iMesh:Int Ptr = Int Ptr pMeshArray[id]
+				?ptr64
+				Local pMesh:Long Ptr = Long Ptr pMeshArray[id]
+				?Not ptr64
+				Local pMesh:Int Ptr = Int Ptr pMeshArray[id]
+				?
+				
+				'For Local n:Int = 0 To 54
+				'	DebugLog "iMesh " + n + "=" + iMesh[n] + " pMesh = " + pMesh[n]
+				'Next
+				
+				meshes[id] = New aiMesh
+				meshes[id].PrimitiveTypes = iMesh[0]
+				meshes[id].NumVertices = iMesh[1]
+				meshes[id].NumFaces = iMesh[2]
+				
+				meshes[id].pVertices = Float Ptr pMesh[2 + ONE32] ' 3/4 - calculate 32/64 offsets
+				meshes[id].pNormals = Float Ptr pMesh[3 + ONE32] ' 4/6
+				meshes[id].pTangents = Byte Ptr pMesh[4 + ONE32] ' 5/8
+				meshes[id].pBitangents = Byte Ptr pMesh[5 + ONE32] ' 6/10 - [(5 * PAD) + ONE32]
+				
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].PrimitiveTypes = " + meshes[id].PrimitiveTypes 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumVertices = " + meshes[id].NumVertices 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumFaces = " + meshes[id].NumFaces 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pVertices = " + meshes[id].pVertices 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pNormals = " + meshes[id].pNormals 
+				'DebugLog "meshes[" + id + "].pTangents = " + meshes[id].pTangents 
+				'DebugLog "meshes[" + id + "].pBitangents = " + meshes[id].pBitangents 
+				
+				Local iMeshPointerOffset:Int = (6 * PAD) + ONE32 ' 7/12
+				Local pMeshPointerOffset:Int = 6 + ONE32 ' 7/12
+				
+				For Local n:Int = 0 To AI_MAX_NUMBER_OF_COLOR_SETS - 1
+					meshes[id].pColors[n] = Byte Ptr iMesh[iMeshPointerOffset + n] ' ptr arr - twice the size in 64-bit
+					'DebugLog "meshes[" + id + "].pColors[n] = " + meshes[id].pColors[n]
+				Next
+				
+				iMeshPointerOffset:+ (AI_MAX_NUMBER_OF_COLOR_SETS * PAD) ' 15/28
+				pMeshPointerOffset:+ AI_MAX_NUMBER_OF_COLOR_SETS ' 15/28
+				
+				For Local n:Int = 0 To AI_MAX_NUMBER_OF_TEXTURECOORDS - 1
+					meshes[id].pTextureCoords[n] = Byte Ptr pMesh[pMeshPointerOffset + n] ' ptr arr
+					'DebugLog "meshes[" + id + "].pTextureCoords[n] = " + meshes[id].pTextureCoords[n]
+				Next 
+				
+				iMeshPointerOffset:+ (AI_MAX_NUMBER_OF_TEXTURECOORDS * PAD) ' 23/44
+				pMeshPointerOffset:+ AI_MAX_NUMBER_OF_TEXTURECOORDS ' 23/44
+				
+				For Local n:Int = 0 To AI_MAX_NUMBER_OF_TEXTURECOORDS - 1
+					meshes[id].NumUVComponents[n] = iMesh[iMeshPointerOffset + n] ' int arr - same size as 32-bit
+					'DebugLog "meshes[" + id + "].NumUVComponents[n] = " + meshes[id].NumUVComponents[n]
+				Next
+				
+				iMeshPointerOffset:+ AI_MAX_NUMBER_OF_TEXTURECOORDS ' 31/52
+				pMeshPointerOffset:+ (AI_MAX_NUMBER_OF_TEXTURECOORDS / PAD) ' 23/44
+				
+				?ptr64
+				meshes[id].pFaces = Long Ptr pMesh[pMeshPointerOffset]
+				?Not ptr64
+				meshes[id].pFaces = Int Ptr pMesh[pMeshPointerOffset]
+				?
+				meshes[id].NumBones = iMesh[iMeshPointerOffset + (1 * PAD)] ' 32/54
+				meshes[id].pBones = Byte Ptr pMesh[pMeshPointerOffset + 2] ' 33/55
+				meshes[id].MaterialIndex = iMesh[iMeshPointerOffset + (3 * PAD)] ' 34/57
+				
+				'For Local n:Int = 0 To meshes[id].NumFaces - 1
+				'	DebugLog "meshes[id].pFaces " + n + "="+meshes[id].pFaces[n]
+				'Next
+				
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pFaces = " + meshes[id].pFaces
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].NumBones = " + meshes[id].NumBones 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].pBones = " + meshes[id].pBones 
+				If aiScene.Log_Assimp Then DebugLog "meshes[" + id + "].MaterialIndex = " + meshes[id].MaterialIndex
+			Next
+			
+			NumMaterials = pointer[4] ' 4/8
+			
+			?ptr64
+			Local pMaterialArray:Long Ptr = Long Ptr pointer[5] ' 5/10
+			?Not ptr64
+			Local pMaterialArray:Int Ptr = Int Ptr pointer[5] ' 5/10
+			?
+			
+			materials = materials[..NumMaterials]
+			
+			If aiScene.Log_Assimp Then DebugLog "NumMaterials = " + NumMaterials
+			If aiScene.Log_Assimp Then DebugLog "pMaterialArray = " + pMaterialArray
+			
+			For Local id:Int = 0 To NumMaterials - 1 
+				If aiScene.Log_Assimp Then DebugLog "Material found"
+				
+				materials[id] = New aiMaterial
+				?ptr64
+				materials[id].pMaterial = Long Ptr pMaterialArray[id]
+				?Not ptr64
+				materials[id].pMaterial = Int Ptr pMaterialArray[id]
+				?
+				materials[id].NumProperties = materials[id].pMaterial[1]
+				materials[id].NumAllocated = materials[id].pMaterial[2]
+				
+				'Rem
+				' loading properties is not needed, but I do it for now to make a list of loaded properties
+				' redim
+				materials[id].Properties = materials[id].Properties[..materials[id].pMaterial[1]]
+				
+				?ptr64
+				Local pMaterialPropertyArray:Long Ptr = Long Ptr materials[id].pMaterial[0]	
+				?Not ptr64
+				Local pMaterialPropertyArray:Int Ptr = Int Ptr materials[id].pMaterial[0]
+				?
+				
+				For Local pid:Int = 0 To materials[id].NumProperties - 1
+					If aiScene.Log_Assimp Then DebugLog "Materialproperty found"
 					
 					materials[id].Properties[pid] = aiMaterialProperty.Create(Byte Ptr pMaterialPropertyArray[pid])
 				Next

@@ -1,9 +1,9 @@
 ' showsingle.bmx
-' based on minib3d bones example
+' Minib3d bones example
 
 Strict
 
-Framework Openb3dmax.Openb3d
+Framework Openb3dmax.B3dglgraphics
 Import Openb3dmaxlibs.Assimp
 
 Incbin "../media/zombie.b3d"
@@ -22,48 +22,43 @@ Local sphere:TMesh=CreateSphere()
 HideEntity sphere
 
 Local ent:TMesh
-Local zipfile:String="../media/zombie.zip"
 
 ' Note: you can load password protected zips but these are easily opened with 7zip as the filenames are not encrypted, 
 ' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak file to protect assets.
 'SetZipStreamPassword zipfile,"blitzmax"
 
-SetTextureLoader 1
+TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "streams" ' use bmx and assimp streams
 
 Local test%=3
 Select test
 	Case 1 ' load assimp mesh
 		Local time:Int=MilliSecs()
-		ent=aiLoadMesh("../media/zombie.b3d", Null, -2) ' -2 = flat shaded
+		ent=LoadAnimMesh("../media/rallycar1.3ds")
 		
 		DebugLog "assimp time="+(time-MilliSecs())
 		
-	Case 2 ' load incbin mesh (and texture as file not found)
+	Case 2 ' load incbin mesh
 		Local time:Int=MilliSecs()
-		ent=aiLoadMesh("incbin::../media/zombie.b3d")
-		
-		Local tex:TTexture=LoadTexture("incbin::../media/Zombie.jpg")
-		EntityTexture ent,tex
+		ent=LoadAnimMesh("incbin::../media/zombie.b3d")
 		
 		DebugLog "incbin time="+(time-MilliSecs())
 		
-	Case 3 ' load zip mesh (and texture as file not found)
+	Case 3 ' load zip mesh
 		Local time:Int=MilliSecs()
-		ent=aiLoadMesh("zip::"+zipfile+"//zombie.b3d")
-		
-		Local tex:TTexture=LoadTexture("zip::"+zipfile+"//Zombie.jpg")
-		EntityTexture ent,tex
+		Local zipfile:String="../media/zombie.zip"
+		ent=LoadAnimMesh("zip::"+zipfile+"//zombie.b3d")
 		
 		DebugLog "zip time="+(time-MilliSecs())
 		
 	Default ' load library mesh
-		SetMeshLoader 2 ' 1 for streams (default), 2 for library
-		SetTextureLoader 2
+		MeshLoader "cpp"
+		TextureLoader "cpp"
 		
 		Local time:Int=MilliSecs()
 		ent=LoadAnimMesh("../media/zombie.b3d")
 		
-		DebugLog "openb3d time="+(time-MilliSecs())
+		DebugLog "lib time="+(time-MilliSecs())
 		
 End Select
 

@@ -10,7 +10,7 @@ To get BaH.Boost by Subversion open command-line and make sure you "cd" to bah.m
 End Rem
 Module Openb3dmaxlibs.Assimplib
 
-ModuleInfo "Version: 0.41"
+ModuleInfo "Version: 0.42"
 ModuleInfo "License: BSD-3-Clause"
 ModuleInfo "Copyright: Wrapper - 2009-2018 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
@@ -76,18 +76,18 @@ ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_OWN_ZLIB" ' disable building internal zli
 ' ImporterRegistry.cpp - disable specific file format loader
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_X_IMPORTER" ' DirectX
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_3DS_IMPORTER" ' 3ds Max
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MD3_IMPORTER" ' Quake III Mesh
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MD3_IMPORTER" ' Quake III Mesh
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MDL_IMPORTER" ' 3D GameStudio Mesh
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MD2_IMPORTER" ' Quake II
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_PLY_IMPORTER" ' Stanford Polygon Library
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_ASE_IMPORTER" ' 3ds Max
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_ASE_IMPORTER" ' 3ds Max
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_OBJ_IMPORTER" ' Wavefront
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_HMP_IMPORTER" ' 3D GameStudio Terrain
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_SMD_IMPORTER" ' Valve Model
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_SMD_IMPORTER" ' Valve Model
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MDC_IMPORTER" ' Return to Castle Wolfenstein
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MD5_IMPORTER" ' Doom 3
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_STL_IMPORTER" ' Stereolithography
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_LWO_IMPORTER" ' LightWave
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_LWO_IMPORTER" ' LightWave
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_DXF_IMPORTER" ' AutoCAD
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_NFF_IMPORTER" ' Sense8/WorldToolKit Neutral File Format
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_RAW_IMPORTER" ' PovRAY Raw
@@ -99,17 +99,17 @@ ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_IRR_IMPORTER" ' Irrlicht Scene
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_Q3D_IMPORTER" ' Quick3D
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_B3D_IMPORTER" ' BlitzBasic 3D
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_COLLADA_IMPORTER" ' DAE
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_TERRAGEN_IMPORTER" ' Terragen Terrain
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_TERRAGEN_IMPORTER" ' Terragen Terrain
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_CSM_IMPORTER" ' CharacterStudio (motion capture)
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_3D_IMPORTER" ' Unreal
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_LWS_IMPORTER" ' LightWave Scene
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_LWS_IMPORTER" ' LightWave Scene
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_OGRE_IMPORTER" ' Ogre
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_OPENGEX_IMPORTER" ' Open Game Engine Exchange - uses OpenDDL
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_MS3D_IMPORTER" ' Milkshape 3D
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_COB_IMPORTER" ' TrueSpace
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_COB_IMPORTER" ' TrueSpace
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_BLEND_IMPORTER" ' Blender 3D
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_Q3BSP_IMPORTER" ' Quake III BSP
-ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_NDO_IMPORTER" ' Izware Nendo
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_Q3BSP_IMPORTER" ' Quake III BSP
+'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_NDO_IMPORTER" ' Izware Nendo
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_IFC_IMPORTER" ' Industry Foundation Classes
 ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_XGL_IMPORTER" ' .XGL (3d XML) .ZGL (compressed XML)
 'ModuleInfo "CC_OPTS: -DASSIMP_BUILD_NO_FBX_IMPORTER" ' Autodesk
@@ -142,7 +142,7 @@ bbdoc: Returns the error text of the last failed import process.
 about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
 End Rem
-Function aiIsExtensionSupported:Int( pFile:String )
+Function IsExtensionSupported:Int( pFile:String )
 	Return aiIsExtensionSupported_( pFile )
 End Function
 
