@@ -13,6 +13,8 @@ Const ONE32:Int=1
 ' Input parameter to the #aiProcess_SortByPType step:
 ' Specifies which primitive types are removed by the step
 Const AI_CONFIG_PP_SBP_REMOVE:String = "PP_SBP_REMOVE"
+Const AI_CONFIG_PP_FD_REMOVE:String = "PP_FD_REMOVE"
+Const AI_CONFIG_PP_SBBC_MAX_BONES:String = "PP_SBBC_MAX_BONES"
 
 ' types.h
 
@@ -178,82 +180,126 @@ Const AI_MATKEY_TEXMAP_AXIS_BASE:String = "$tex.mapaxis"
 Const AI_MATKEY_UVTRANSFORM_BASE:String = "$tex.uvtrafo"
 Const AI_MATKEY_TEXFLAGS_BASE:String = "$tex.flags"
 
+' Assimp.cpp
 Extern
 
-' Assimp.cpp
+Rem
+bbdoc: Returns the error text of the last failed import process
+End Rem
+	Function aiGetErrorString:Byte Ptr()
 
 Rem
-bbdoc: Reads the given file and returns its content.
+bbdoc: Create property store
+End Rem
+	Function aiCreatePropertyStore:Byte Ptr()
+
+Rem
+bbdoc: Release property store
+End Rem
+	Function aiReleasePropertyStore( p:Byte Ptr )
+
+Rem
+bbdoc: Set float property
+End Rem
+	Function aiSetImportPropertyFloat( store:Byte Ptr,szName$z,value:Float )
+
+Rem
+bbdoc: Set integer property
+End Rem
+	Function aiSetImportPropertyInteger( store:Byte Ptr,szName$z,value:Int )
+
+Rem
+bbdoc: Set string property
+End Rem
+	Function aiSetImportPropertyString( store:Byte Ptr,szName$z,st$z )
+	
+Rem
+bbdoc: Reads the given file and returns its content
 about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
 End Rem
-	Function aiImportFile:Byte Ptr( pFile$z, pFlags:Int ) = "aiImportFile"
+	Function aiImportFile:Byte Ptr( pFile$z, pFlags:Int )
+	
+Rem
+bbdoc: Reads the given file with file IO
+End Rem
+	Function aiImportFileEx:Byte Ptr( pFile$z,pFlags:Int,pFS:Byte Ptr )
 
 Rem
-bbdoc: Reads the given file from a given memory buffer.
+bbdoc: Reads the given file with file IO and properties
+End Rem
+	Function aiImportFileExWithProperties:Byte Ptr( pFile$z,pFlags:Int,pFS:Byte Ptr,pProps:Byte Ptr )
+
+Rem
+bbdoc: Reads the given file from a given memory buffer
 about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
 End Rem
-	Function aiImportFileFromMemory:Byte Ptr( pBuffer:Byte Ptr,pLength:Int,pFlags:Int,pHint$z ) = "aiImportFileFromMemory"
+	Function aiImportFileFromMemory:Byte Ptr( pBuffer:Byte Ptr,pLength:Int,pFlags:Int,pHint$z )
 
 Rem
-bbdoc: Releases all resources associated with the given import process.
+bbdoc: Reads the given file from a given memory buffer with properties
+End Rem
+	Function aiImportFileFromMemoryWithProperties:Byte Ptr( pBuffer:Byte Ptr,pLength:Int,pFlags:Int,pHint$z,props:Byte Ptr )
+
+Rem
+bbdoc: Releases all resources associated with the given import process
 about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
 End Rem
-	Function aiReleaseImport( pScene:Byte Ptr ) = "aiReleaseImport"
+	Function aiReleaseImport( pScene:Byte Ptr )
 
-' see assimplib.bmx
+'Rem
+'bbdoc: Returns the error text of the last failed import process.
+'about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_importer.html">Assimp.cpp</a>
+'and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
+'End Rem
 	Function aiIsExtensionSupported_:Int( pFile$z ) = "aiIsExtensionSupported"
+
 
 ' MaterialSystem.cpp
 
 Rem
-bbdoc: Get a color (3 or 4 floats) from the material.
+bbdoc: Get a color (3 or 4 floats) from the material
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialColor:Int( pMat:Byte Ptr, pKey$z, iType:Int, ..
-				index:Int, pOut:Byte Ptr ) = "aiGetMaterialColor"
-				
+	Function aiGetMaterialColor:Int( pMat:Byte Ptr, pKey$z, iType:Int, index:Int, pOut:Byte Ptr )
+	
 Rem
-bbdoc: Get a string from the material.
+bbdoc: Get a string from the material
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialString:Int( pMat:Byte Ptr, pKey$z, iType:Int, ..
-				index:Int, pOut:Byte Ptr ) = "aiGetMaterialString"
-				
+	Function aiGetMaterialString:Int( pMat:Byte Ptr, pKey$z, iType:Int, index:Int, pOut:Byte Ptr )
+	
 Rem
-bbdoc: Get an array of integer values from the material.
+bbdoc: Get an array of integer values from the material
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialIntegerArray:Int( pMat:Byte Ptr, pKey$z, iType:Int, ..
-				index:Int, pOut:Int Ptr, pMax:Int Ptr ) = "aiGetMaterialIntegerArray"
-				
+	Function aiGetMaterialIntegerArray:Int( pMat:Byte Ptr, pKey$z, iType:Int, index:Int, pOut:Int Ptr, pMax:Int Ptr )
+	
 Rem
-bbdoc: Get an array of floating-point values from the material.
+bbdoc: Get an array of floating-point values from the material
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialFloatArray:Int( pMat:Byte Ptr, pKey$z, iType:Int, ..
-				index:Int, pOut:Float Ptr, pMax:Int Ptr ) = "aiGetMaterialFloatArray"
-				
+	Function aiGetMaterialFloatArray:Int( pMat:Byte Ptr, pKey$z, iType:Int, index:Int, pOut:Float Ptr, pMax:Int Ptr )
+	
 Rem
-bbdoc: Get all values pertaining to a particular texture slot from the material.
+bbdoc: Get all values pertaining to a particular texture slot from the material
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialTexture:Int( pMat:Byte Ptr, texType:Int, index:Int, path:Byte Ptr, ..
-				mapping:Byte Ptr=Null, uvindex:Int Ptr=Null, blend:Float Ptr=Null, ..
-				op:Byte Ptr=Null, mapmode:Byte Ptr=Null, flags:Int Ptr=Null ) = "aiGetMaterialTexture"
-				
+	Function aiGetMaterialTexture:Int( pMat:Byte Ptr, texType:Int, index:Int, path:Byte Ptr, mapping:Byte Ptr=Null, ..
+			uvindex:Int Ptr=Null, blend:Float Ptr=Null, op:Byte Ptr=Null, mapmode:Byte Ptr=Null, flags:Int Ptr=Null )
+			
 Rem
-bbdoc: Get the number of textures for a particular texture type.
+bbdoc: Get the number of textures for a particular texture type
 about: See <a href="http://assimp.sourceforge.net/lib_html/structai_material.html">MaterialSystem.cpp</a>
 and <a href="http://assimp.sourceforge.net/lib_html/material_8h.html">material.h</a>.
 End Rem
-	Function aiGetMaterialTextureCount:Int( pMat:Byte Ptr, texType:Int ) = "aiGetMaterialTextureCount"
+	Function aiGetMaterialTextureCount:Int( pMat:Byte Ptr, texType:Int )
 	
 End Extern

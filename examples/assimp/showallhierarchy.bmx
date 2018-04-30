@@ -89,31 +89,31 @@ While Not KeyDown(KEY_ESCAPE)
 	
 	' hierarchy functions
 	If KeyHit(KEY_X)
-		aiHelper.RotateEntityAxisAll( mesh,1 )
+		TAssimpEntity.RotateEntityAxisAll( mesh,1 )
 	EndIf
 	If KeyHit(KEY_Y)
-		aiHelper.RotateEntityAxisAll( mesh,2 )
+		TAssimpEntity.RotateEntityAxisAll( mesh,2 )
 	EndIf
 	If KeyHit(KEY_Z)
-		aiHelper.RotateEntityAxisAll( mesh,3 )
+		TAssimpEntity.RotateEntityAxisAll( mesh,3 )
 	EndIf
 	
 	If KeyHit(KEY_U)
-		aiHelper.UpdateNormalsAll( mesh )
+		TAssimpEntity.UpdateNormalsAll( mesh )
 	EndIf
 	
 	If KeyHit(KEY_F)
-		aiHelper.FlipMeshAll( mesh )
+		TAssimpEntity.FlipMeshAll( mesh )
 	EndIf
 	
 	If KeyHit(KEY_1)
-		aiHelper.ScaleMeshAxisAll( mesh,1 )
+		TAssimpEntity.ScaleMeshAxisAll( mesh,1 )
 	EndIf
 	If KeyHit(KEY_2)
-		aiHelper.ScaleMeshAxisAll( mesh,2 )
+		TAssimpEntity.ScaleMeshAxisAll( mesh,2 )
 	EndIf
 	If KeyHit(KEY_3)
-		aiHelper.ScaleMeshAxisAll( mesh,3 )
+		TAssimpEntity.ScaleMeshAxisAll( mesh,3 )
 	EndIf
 	
 	If KeyHit(KEY_SPACE) Or go = 1
@@ -125,7 +125,7 @@ While Not KeyDown(KEY_ESCAPE)
 		
 		DebugLog "file="+String(filearray[fileNUmber])
 		
-		If IsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
+		If aiIsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
 			currentModel = String(filearray[fileNUmber])
 			If mesh Then FreeEntity mesh ; mesh = Null
 			
@@ -162,7 +162,7 @@ While Not KeyDown(KEY_ESCAPE)
 	EndIf
 	
 	Text 0,20,"fileNUmber="+fileNUmber+"/"+filearray.length+" "+StripDir(currentModel)
-	Text 0,40,"FPS: "+fps+", Tri count: "+aiHelper.CountTrianglesAll(mesh)
+	Text 0,40,"FPS: "+fps+", Tri count: "+TAssimpEntity.CountTrianglesAll(mesh)
 	Text 0,60,"Space: next model, X,Y,Z: rotate entity on axis, "
 	Text 0,80,"U: update normals, F: flip mesh faces, 1,2,3: scale mesh on axis"
 	Text 0,100,"Children: "+count_children

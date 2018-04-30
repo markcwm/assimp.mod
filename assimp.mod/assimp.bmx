@@ -23,18 +23,20 @@ ModuleInfo "Source: https://github.com/assimp/assimp"
 Import Openb3dmax.Openb3dmax
 Import Openb3dmaxlibs.Assimplib
 
-Include "types.bmx"
+Include "TAssimpLoader.bmx"
+Include "TAssimpEntity.bmx"
+Include "TMeshLoaderAssimp.bmx"
 
 Rem
 bbdoc: FitMesh for meshes with children.
 End Rem
 Function FitAnimMesh( m:TEntity, x#, y#, z#, w#, h#, d#, uniform:Int=False )
-	aiHelper.FitAnimMesh( m, x, y, z, w, h, d, uniform )
+	TAssimpEntity.FitAnimMesh( m, x, y, z, w, h, d, uniform )
 End Function
 
 Rem
 bbdoc: Creates a list of valid files to load.
 EndRem
 Function EnumFiles( list:TList, dir:String, skipExt:TList )
-	aiHelper.EnumFiles( list, dir, skipExt )
+	TAssimpHelper.EnumFiles( list, dir, skipExt )
 End Function

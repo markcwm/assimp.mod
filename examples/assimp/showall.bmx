@@ -26,8 +26,9 @@ Local path$
 path = "../../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
-'TGlobal.Log_Assimp=1 ' debug data
+TGlobal.Log_Assimp=1 ' debug data
 MeshLoader "assimp" ' use assimp from file
+'MeshLoader "assimpstream"
 
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")
@@ -96,7 +97,7 @@ While Not KeyDown(KEY_ESCAPE)
 
 		DebugLog "file="+String(filearray[fileNUmber])
 		
-		If IsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
+		If aiIsExtensionSupported( ExtractExt(String(filearray[fileNUmber])) )
 			currentFile = String(filearray[fileNUmber])
 			If mesh Then FreeEntity mesh ; mesh = Null
 			
@@ -135,7 +136,7 @@ While Not KeyDown(KEY_ESCAPE)
 	EndIf
 	
 	Text 0,20,"fileNUmber="+fileNUmber + "/" + filearray.length + " " + StripDir(currentFile)
-	Text 0,40,"FPS: "+fps+", Tri count: "+aiHelper.CountTrianglesAll(mesh)
+	Text 0,40,"FPS: "+fps+", Tri count: "+TAssimpEntity.CountTrianglesAll(mesh)
 	Text 0,60,"Children: "+count_children
 	
 	Flip
