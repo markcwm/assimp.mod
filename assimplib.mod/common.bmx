@@ -10,11 +10,23 @@ Const ONE32:Int=1
 
 ' config.h
 
-' Input parameter to the #aiProcess_SortByPType step:
-' Specifies which primitive types are removed by the step
+' Input parameter to the SortByPType step, specifies which primitive types are removed
 Const AI_CONFIG_PP_SBP_REMOVE:String = "PP_SBP_REMOVE"
+
+' Configures the FindDegenerates step to remove degenerated primitives
 Const AI_CONFIG_PP_FD_REMOVE:String = "PP_FD_REMOVE"
+
+' Maximum bone count per mesh for the SplitbyBoneCount step, default limit=60
 Const AI_CONFIG_PP_SBBC_MAX_BONES:String = "PP_SBBC_MAX_BONES"
+
+' Set the maximum number of bones affecting a single vertex, default limit=4
+Const AI_CONFIG_PP_LBW_MAX_WEIGHTS:String = "PP_LBW_MAX_WEIGHTS"
+
+' Set the maximum number of vertices in a mesh, default limit=1000000
+Const AI_CONFIG_PP_SLM_VERTEX_LIMIT:String = "PP_SLM_VERTEX_LIMIT"
+
+' Set the maximum number of triangles in a mesh, default limit=1000000
+Const AI_CONFIG_PP_SLM_TRIANGLE_LIMIT:String = "PP_SLM_TRIANGLE_LIMIT"
 
 ' types.h
 
@@ -25,38 +37,89 @@ Const AI_OUTOFMEMORY:Int = -$3
 Const AI_INVALIDFILE:Int = -$2
 Const AI_INVALIDARG:Int = -$4
 
-' Maximum dimension for strings, ASSIMP strings are zero terminated.
+' Maximum dimension for strings, ASSIMP strings are zero terminated
 Const MAXLEN:Int = 1024
 
 ' postprocess.h
 
 ' enum aiPostProcessSteps - Defines the flags for all possible post processing step
 
+' Calculates the tangents and bitangents for the imported meshes. 
 Const aiProcess_CalcTangentSpace:Int = $1
+
+' Identifies and joins identical vertex data sets within all imported meshes.
 Const aiProcess_JoinIdenticalVertices:Int = $2
+
+' Converts all the imported data to a left-handed coordinate space. 
 Const aiProcess_MakeLeftHanded:Int = $4
+
+' Triangulates all faces of all meshes. 
 Const aiProcess_Triangulate:Int = $8
+
+' Removes some parts of the data structure (animations, materials, light sources, cameras, textures, vertex components).
 Const aiProcess_RemoveComponent:Int = $10
+
+' Generates normals for all faces of all meshes. 
 Const aiProcess_GenNormals:Int = $20
+
+' Generates smooth normals for all vertices in the mesh. 
 Const aiProcess_GenSmoothNormals:Int = $40
+
+' Splits large meshes into smaller sub-meshes. 
 Const aiProcess_SplitLargeMeshes:Int = $80
+
+' Removes the node graph and pre-transforms all vertices with the local transformation matrices of their nodes.
 Const aiProcess_PreTransformVertices:Int = $100
+
+' Limits the number of bones simultaneously affecting a single vertex to a maximum value.
 Const aiProcess_LimitBoneWeights:Int = $200
+
+' Validates the imported scene data structure. 
 Const aiProcess_ValidateDataStructure:Int = $400
+
+' Reorders triangles for better vertex cache locality. 
 Const aiProcess_ImproveCacheLocality:Int = $800
+
+' Searches for redundant/unreferenced materials and removes them. 
 Const aiProcess_RemoveRedundantMaterials:Int = $1000
+
+' This step tries to determine which meshes have normal vectors that are facing inwards and inverts them.
 Const aiProcess_FixInfacingNormals:Int = $2000
+
+' This step splits meshes with more than one primitive type in homogeneous sub-meshes.
 Const aiProcess_SortByPType:Int = $8000
+
+' This step searches all meshes for degenerate primitives and converts them to proper lines or points.
 Const aiProcess_FindDegenerates:Int = $10000
+
+' This step searches all meshes for invalid data, such as zeroed normal vectors or invalid UV coords and removes/fixes them.
 Const aiProcess_FindInvalidData:Int = $20000
+
+' This step converts non-UV mappings (such as spherical or cylindrical mapping) to proper texture coordinate channels.
 Const aiProcess_GenUVCoords:Int = $40000
+
+' This step applies per-texture UV transformations and bakes them into stand-alone vtexture coordinate channels.
 Const aiProcess_TransformUVCoords:Int = $80000
+
+' This step searches for duplicate meshes and replaces them with references to the first mesh.
 Const aiProcess_FindInstances:Int = $100000
+
+' A postprocessing step to reduce the number of meshes. 
 Const aiProcess_OptimizeMeshes:Int = $200000 
+
+' A postprocessing step to optimize the scene hierarchy. 
 Const aiProcess_OptimizeGraph:Int = $400000
+
+' This step flips all UV coordinates along the y-axis and adjusts material settings and bitangents accordingly.
 Const aiProcess_FlipUVs:Int = $800000
+
+' This step adjusts the output face winding order to be CW. 
 Const aiProcess_FlipWindingOrder:Int = $1000000
+
+' This step splits meshes with many bones into sub-meshes so that each su-bmesh has fewer or as many bones as a given limit. 
 Const aiProcess_SplitByBoneCount:Int = $2000000
+
+' This step removes bones losslessly or according to some threshold. 
 Const aiProcess_Debone:Int = $4000000
 
 ' Shortcut to match Direct3D conventions: left-handed geometry, top-left origin for UV coords and clockwise face order
@@ -159,6 +222,13 @@ Const AI_MATKEY_NAME:String = "?mat.name"
 Const AI_MATKEY_TWOSIDED:String = "$mat.twosided"
 Const AI_MATKEY_OPACITY:String = "$mat.opacity"
 Const AI_MATKEY_SHININESS:String = "$mat.shininess"
+Const AI_MATKEY_SHADING_MODEL:String = "$mat.shadingm"
+Const AI_MATKEY_ENABLE_WIREFRAME:String = "$mat.wireframe"
+Const AI_MATKEY_BLEND_FUNC:String = "$mat.blend"
+Const AI_MATKEY_BUMPSCALING:String = "$mat.bumpscaling"
+Const AI_MATKEY_REFLECTIVITY:String = "$mat.reflectivity"
+Const AI_MATKEY_SHININESS_STRENGTH:String = "$mat.shinpercent"
+Const AI_MATKEY_REFRACTI:String = "$mat.refracti"
 
 Const AI_MATKEY_COLOR_DIFFUSE:String = "$clr.diffuse"
 Const AI_MATKEY_COLOR_AMBIENT:String = "$clr.ambient"
@@ -166,6 +236,7 @@ Const AI_MATKEY_COLOR_SPECULAR:String = "$clr.specular"
 Const AI_MATKEY_COLOR_EMISSIVE:String = "$clr.emissive"
 Const AI_MATKEY_COLOR_TRANSPARENT:String = "$clr.transparent"
 Const AI_MATKEY_COLOR_REFLECTIVE:String = "$clr.reflective"
+Const AI_MATKEY_GLOBAL_BACKGROUND_IMAGE:String = "?bg.global"
 
 ' Pure key names for all texture-related properties
 
@@ -219,11 +290,6 @@ about: See <a href="http://assimp.sourceforge.net/lib_html/class_assimp_1_1_impo
 and <a href="http://assimp.sourceforge.net/lib_html/cimport_8h.html">cimport.h</a>.
 End Rem
 	Function aiImportFile:Byte Ptr( pFile$z, pFlags:Int )
-	
-Rem
-bbdoc: Reads the given file with file IO
-End Rem
-	Function aiImportFileEx:Byte Ptr( pFile$z,pFlags:Int,pFS:Byte Ptr )
 
 Rem
 bbdoc: Reads the given file with file IO and properties

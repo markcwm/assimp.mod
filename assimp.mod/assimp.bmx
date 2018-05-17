@@ -23,6 +23,7 @@ ModuleInfo "Source: https://github.com/assimp/assimp"
 Import Openb3dmax.Openb3dmax
 Import Openb3dmaxlibs.Assimplib
 
+Include "aitypes.bmx"
 Include "TAssimpLoader.bmx"
 Include "TAssimpEntity.bmx"
 Include "TMeshLoaderAssimp.bmx"

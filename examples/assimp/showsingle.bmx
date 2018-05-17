@@ -1,5 +1,4 @@
 ' showsingle.bmx
-' Minib3d bones example
 
 Strict
 
@@ -15,6 +14,7 @@ Graphics3D width,height,depth,Mode
 
 Local cam:TCamera=CreateCamera()
 PositionEntity cam,0,10,-15
+CameraClsColor cam,50,100,150
 
 Local light:TLight=CreateLight()
 
@@ -27,31 +27,34 @@ Local mesh:TMesh
 ' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak file to protect assets.
 'SetZipStreamPassword zipfile,"blitzmax"
 
-'TGlobal.Log_Assimp=1 ' debug data
-MeshLoader "assimp" ' use assimp from file
-'MeshLoader "assimpstream" ' use assimp streams
+TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "assimp",-1 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
+'MeshLoader "assimpstream",-1 ' use assimp streams
 
 Local test%=1
 Select test
 	Case 1 ' load assimp mesh
 		Local time:Int=MilliSecs()
-		mesh=LoadAnimMesh("../../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' OBJ material files don't load from stream
+		mesh=LoadAnimMesh("../media/zombie.b3d")
 		'mesh=LoadAnimMesh("../media/rallycar1.3ds")
+		'mesh=LoadAnimMesh("../../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' note: OBJ materials don't load from stream
+		'mesh=LoadAnimMesh("../../../openb3dmax.help/media/tris.md2")
+		'mesh=LoadAnimMesh("../../../openb3dmax.help/media/bath/RomanBath.b3d")
 		
-		DebugLog "assimp time="+(time-MilliSecs())
+		DebugLog "assimp time="+Abs(MilliSecs()-time)
 		
 	Case 2 ' load incbin mesh
 		Local time:Int=MilliSecs()
 		mesh=LoadAnimMesh("incbin::../media/zombie.b3d")
 		
-		DebugLog "incbin time="+(time-MilliSecs())
+		DebugLog "incbin time="+Abs(MilliSecs()-time)
 		
 	Case 3 ' load zip mesh
 		Local time:Int=MilliSecs()
 		Local zipfile:String="../media/zombie.zip"
 		mesh=LoadAnimMesh("zip::"+zipfile+"//zombie.b3d")
 		
-		DebugLog "zip time="+(time-MilliSecs())
+		DebugLog "zip time="+Abs(MilliSecs()-time)
 		
 	Default ' load library mesh
 		MeshLoader "cpp"
@@ -60,7 +63,7 @@ Select test
 		Local time:Int=MilliSecs()
 		mesh=LoadAnimMesh("../media/zombie.b3d")
 		
-		DebugLog "lib time="+(time-MilliSecs())
+		DebugLog "lib time="+Abs(MilliSecs()-time)
 		
 End Select
 
@@ -72,7 +75,7 @@ Local count_children%=TEntity.CountAllChildren(mesh) ' total no. of children bel
 ' marker entity. will be used to highlight selected child entity (with zombie anim mesh it will be a bone)
 Local marker_ent:TMesh=CreateSphere(8)
 EntityColor marker_ent,255,255,0
-ScaleEntity marker_ent,.25,.25,.25
+'ScaleEntity marker_ent,.25,.25,.25
 EntityOrder marker_ent,-1
 
 ' anim time - this will be incremented/decremented each frame and then supplied to SetAnimTime to animate entity
@@ -88,12 +91,14 @@ While Not KeyDown(KEY_ESCAPE)
 
 	If KeyHit(KEY_ENTER) Then DebugStop
 	
-	If KeyDown(KEY_LEFT) Then TurnEntity mesh,0,3,0
-	If KeyDown(KEY_RIGHT) Then TurnEntity mesh,0,-3,0
+	If KeyDown(KEY_J) Then TurnEntity mesh,0,3,0
+	If KeyDown(KEY_L) Then TurnEntity mesh,0,-3,0
 	
 	' control camera
+	' control camera
 	MoveEntity cam,KeyDown(KEY_D)-KeyDown(KEY_A),0,KeyDown(KEY_W)-KeyDown(KEY_S)
-
+	TurnEntity cam,KeyDown(KEY_DOWN)-KeyDown(KEY_UP),KeyDown(KEY_LEFT)-KeyDown(KEY_RIGHT),0
+	
 	' change anim time values
 	If KeyDown(KEY_MINUS) Then anim_time#=anim_time#-0.1
 	If KeyDown(KEY_EQUALS) Then anim_time#=anim_time#+0.1
@@ -129,7 +134,7 @@ While Not KeyDown(KEY_ESCAPE)
 	Text 0,0,"FPS: "+fps
 	Text 0,20,"+/- to animate"
 	Text 0,40,"[] to select different child entity (bone)"
-	Text 0,60,"WSAD move camera, LR arrows turn entity"
+	Text 0,60,"Arrows/WASD move camera, JL arrows turn entity"
 	If child_ent<>Null
 		Text 0,80,"Child: "+EntityName(child_ent)
 	EndIf

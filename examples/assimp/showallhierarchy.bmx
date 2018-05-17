@@ -1,5 +1,5 @@
 ' showallhierarchy.bmx
-' Assimp sample viewer with hierarchy functions
+' Assimp sample viewer, with hierarchy functions
 
 Strict
 
@@ -10,8 +10,7 @@ Graphics3D DesktopWidth(),DesktopHeight(),0,2
 
 Local cam:TCamera=CreateCamera()
 PositionEntity cam,0,150,-145
-
-CameraClsColor cam,200,200,255
+CameraClsColor cam,50,100,150
 CameraRange cam,0.1,1000
 
 Local light:TLight=CreateLight()
@@ -27,7 +26,8 @@ path = "../../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
 'TGlobal.Log_Assimp=1 ' debug data
-MeshLoader "assimpstream" ' use assimp from stream
+'MeshLoader "assimp",-1 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
+MeshLoader "assimpstream",-1 ' use assimp streams
 
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")

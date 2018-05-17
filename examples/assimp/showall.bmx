@@ -10,8 +10,7 @@ Graphics3D DesktopWidth(),DesktopHeight(),0,2
 
 Local cam:TCamera=CreateCamera()
 PositionEntity cam,0,150,-145
-
-CameraClsColor cam,200,200,255
+CameraClsColor cam,50,100,150
 CameraRange cam,0.1,1000
 
 Local light:TLight=CreateLight()
@@ -26,9 +25,9 @@ Local path$
 path = "../../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
-TGlobal.Log_Assimp=1 ' debug data
-MeshLoader "assimp" ' use assimp from file
-'MeshLoader "assimpstream"
+'TGlobal.Log_Assimp=1 ' debug data
+MeshLoader "assimp",-2-4 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
+'MeshLoader "assimpstream",-2-4 ' use assimp streams
 
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")

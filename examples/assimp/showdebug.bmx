@@ -5,15 +5,13 @@ Strict
 Framework Openb3dmax.B3dglgraphics
 Import Openb3dmaxlibs.Assimp
 
-'Include "typeslib.bmx"
-'Include "types.bmx"
-
 Local width%=DesktopWidth(),height%=DesktopHeight(),depth%=0,Mode%=2
 
 Graphics3D width,height,depth,Mode
 
 Local cam:TCamera=CreateCamera()
 PositionEntity cam,0,10,-15
+CameraClsColor cam,50,100,150
 
 Local light:TLight=CreateLight()
 
@@ -24,41 +22,43 @@ Local path$ = "../../assimplib.mod/assimp/test/models"
 Local ent:TMesh
 
 TGlobal.Log_Assimp=1 ' debug data
-MeshLoader "assimp"
+MeshLoader "assimp",-1 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
+'MeshLoader "assimpstream",-1 ' use assimp streams
 
 Local test%=2
 Select test
 	Case 1
 		Local time:Int=MilliSecs()
 		Local file:String = "../media/zombie.b3d"
-		ent = TAssimpLoader.LoadMesh(Null, file)
-		DebugLog "assimp time="+(time-MilliSecs())
+		ent = TAssimpLoader.LoadAnimAssimp(Null, file)
+		
+		DebugLog "assimp time="+Abs(MilliSecs()-time)
 		
 	Case 2
 		Local file:String = path + "/3DS/cubes_with_alpha.3DS"
-		ent = TAssimpLoader.LoadMesh(Null, file)
+		ent = TAssimpLoader.LoadAnimAssimp(Null, file)
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	' debugging
 	Case 2 ' model trouble
 		DebugLog "modeltrouble test:"
-		ent=TAssimpLoader.LoadMesh(Null, "modeltrouble/assimp301/house.dae")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, "modeltrouble/assimp301/house.dae")
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 3
 		DebugLog "modeltrouble test:"
-		ent=TAssimpLoader.LoadMesh(Null, "modeltrouble/assimp303/model.obj")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, "modeltrouble/assimp303/model.obj")
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 4 ' ascii cob bug test
 		DebugLog "cob test:"
-		ent=TAssimpLoader.LoadMesh(Null, path+"COB/dwarf_ascii.cob")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, path+"COB/dwarf_ascii.cob")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 5
 		DebugLog "cob test:"
-		ent=TAssimpLoader.LoadMesh(Null, path+"COB/molecule_ascii.cob")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, path+"COB/molecule_ascii.cob")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
@@ -66,13 +66,13 @@ Select test
 		' error: terminate called after throwing an instance of 'Assimp::Blender::Error'
 		' what(): BlendDNA: Did not find a field named `angle` in structure `Camera`
 		DebugLog "blend test:"
-		ent=TAssimpLoader.LoadMesh(Null, path+"BLEND/4Cubes4Mats_248.blend")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, path+"BLEND/4Cubes4Mats_248.blend")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		
 	Case 7
 		DebugLog "blend test:"
-		ent=TAssimpLoader.LoadMesh(Null, path+"BLEND/blender_269_regress1.blend")
+		ent=TAssimpLoader.LoadAnimAssimp(Null, path+"BLEND/blender_269_regress1.blend")
 		If ent=Null Then ent=sphere
 		FitMesh ent,-10,0,-10,20,20,20,True
 		

@@ -4,6 +4,7 @@
 <table width=100% cellspacing=0><tr align=center><td class=small>&nbsp;</td>
 <td class=small width=1%><b>Openb3dmaxlibs.Assimp:</b></td>
 <td class=small width=1%><a href=#functions class=small>Functions</a></td>
+<td class=small width=1%><a href=#types class=small>Types</a></td>
 <td class=small width=1%><a href=#modinfo class=small>Modinfo</a></td>
 <td class=small width=1%><a href='../../../../mod/openb3dmaxlibs.mod/assimp.mod/assimp.bmx' class=small>Source</a></td>
 <td class=small>&nbsp;</td></tr></table>
@@ -20,6 +21,11 @@ Creates a list of valid files to load.
 FitMesh for meshes with children.
 </td></tr>
 </table>
+<h2><a name=types></a>Types Summary</h2><table class=doc width=100%>
+<tr><td class=docleft width=1%><a href=#aiMeshEx>aiMeshEx</a></td><td class=docright>
+A mesh represents a geometry or model with a single material.
+</td></tr>
+</table>
 <h2
  id=functionsdet>Functions
 </h2>
@@ -31,6 +37,27 @@ FitMesh for meshes with children.
 <table class=doc width=100% cellspacing=3 id=FitAnimMesh>
 <tr><td class=doctop colspan=2>Function FitAnimMesh( m:TEntity, x#, y#, z#, w#, h#, d#, uniform:Int=False )</td></tr>
 <tr><td class=docleft width=1%>Description</td><td class=docright>FitMesh for meshes with children.</td></tr>
+</table>
+<br>
+<h2
+ id=typesdet>Types
+</h2>
+<table class=doc width=100% cellspacing=3 id=aiMeshEx>
+<tr><td class=doctop colspan=2>Type aiMeshEx Extends aiMesh</td></tr>
+<tr><td class=docleft width=1%>Description</td><td class=docright>A mesh represents a geometry or model with a single material.</td></tr>
+<tr><td class=docleft width=1%>Information</td><td class=docright>It usually consists of a number of vertices and a series of primitives/faces
+referencing the vertices. In addition there might be a series of bones, each
+of them addressing a number of vertices with a certain weight. Vertex data
+is presented in channels with each channel containing a single per-vertex
+information such as a set of texture coords or a normal vector.
+If a data pointer is non-null, the corresponding data stream is present.
+From C++ programs you can also use the comfort functions Has*() to
+test for the presence of various data streams.
+<br><br>
+A mesh uses only a single material which is referenced by a material ID.
+<b>note</b> The mPositions member is usually not optional. However, vertex positions
+*could* be missing if the AI_SCENE_FLAGS_INCOMPLETE flag is set in aiScene::mFlags.
+*/</td></tr>
 </table>
 <br>
 <h2 id=modinfo>Module Information</h2>
