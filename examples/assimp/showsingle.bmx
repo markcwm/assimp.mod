@@ -35,11 +35,11 @@ Local test%=1
 Select test
 	Case 1 ' load assimp mesh
 		Local time:Int=MilliSecs()
-		mesh=LoadAnimMesh("../media/zombie.b3d")
+		'mesh=LoadAnimMesh("../media/zombie.b3d")
 		'mesh=LoadAnimMesh("../media/rallycar1.3ds")
 		'mesh=LoadAnimMesh("../../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' note: OBJ materials don't load from stream
 		'mesh=LoadAnimMesh("../../../openb3dmax.help/media/tris.md2")
-		'mesh=LoadAnimMesh("../../../openb3dmax.help/media/bath/RomanBath.b3d")
+		mesh=LoadAnimMesh("../../../openb3dmax.help/media/bath/RomanBath.b3d")
 		
 		DebugLog "assimp time="+Abs(MilliSecs()-time)
 		
@@ -95,8 +95,7 @@ While Not KeyDown(KEY_ESCAPE)
 	If KeyDown(KEY_L) Then TurnEntity mesh,0,-3,0
 	
 	' control camera
-	' control camera
-	MoveEntity cam,KeyDown(KEY_D)-KeyDown(KEY_A),0,KeyDown(KEY_W)-KeyDown(KEY_S)
+	MoveEntity cam,(KeyDown(KEY_D)-KeyDown(KEY_A))/2.0,0,(KeyDown(KEY_W)-KeyDown(KEY_S))/2.0
 	TurnEntity cam,KeyDown(KEY_DOWN)-KeyDown(KEY_UP),KeyDown(KEY_LEFT)-KeyDown(KEY_RIGHT),0
 	
 	' change anim time values

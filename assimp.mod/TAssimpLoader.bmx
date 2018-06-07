@@ -116,12 +116,12 @@ Type TAssimpLoader
 			' seems alpha comes in different places depending on model format, seems wavefront OBJ alpha doesn't load
 			'BrushAlpha brushes[id],mat.GetAlpha()' * mat.GetDiffuseAlpha() (might be 0 so not good)
 			
-			BrushShininess brushes[id], mat.GetShininess()
+			BrushShininess(brushes[id], mat.GetShininess())
 			
-			Local tex_flags:Int = 1 + 8
+			Local tex_flags:Int = 1+8
 			
 			If mat.IsTwoSided()
-				BrushFX brushes[id], 32
+				BrushFX(brushes[id], brushes[id].fx[0] | 32) ' transparency for brush alpha tex
 				tex_flags = tex_flags + 2048
 			EndIf
 			
@@ -149,7 +149,7 @@ Type TAssimpLoader
 				
 				If tex
 					If (tex_flags & 2048) Then TextureBlend(tex, 2)
-					BrushTexture brushes[id], tex, 0, 0 ' no texture layers support in Assimp
+					BrushTexture(brushes[id], tex, 0, 0) ' no texture layers support in Assimp
 				EndIf
 				
 			EndIf
