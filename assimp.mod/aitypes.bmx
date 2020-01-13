@@ -64,10 +64,10 @@ Type aiMatrix4x4Ex Extends aiMatrix4x4
 		m.d4 = pMat[15]
 		
 		Rem
-		If TGlobal.Log_Assimp Then DebugLog " a1="+m.a1+" a2="+m.a2+" a3="+m.a3+" a4="+m.a4
-		If TGlobal.Log_Assimp Then DebugLog " b1="+m.b1+" b2="+m.b2+" b3="+m.b3+" b4="+m.b4
-		If TGlobal.Log_Assimp Then DebugLog " c1="+m.c1+" c2="+m.c2+" c3="+m.c3+" c4="+m.c4
-		If TGlobal.Log_Assimp Then DebugLog " d1="+m.d1+" d2="+m.d2+" d3="+m.d3+" d4="+m.d4
+		If TGlobal3D.Log_Assimp Then DebugLog " a1="+m.a1+" a2="+m.a2+" a3="+m.a3+" a4="+m.a4
+		If TGlobal3D.Log_Assimp Then DebugLog " b1="+m.b1+" b2="+m.b2+" b3="+m.b3+" b4="+m.b4
+		If TGlobal3D.Log_Assimp Then DebugLog " c1="+m.c1+" c2="+m.c2+" c3="+m.c3+" c4="+m.c4
+		If TGlobal3D.Log_Assimp Then DebugLog " d1="+m.d1+" d2="+m.d2+" d3="+m.d3+" d4="+m.d4
 		EndRem
 		
 		Return m
@@ -116,7 +116,7 @@ Type aiMatrix4x4Ex Extends aiMatrix4x4
 			heading = ATan2(rm.a3, rm.c3)
 			attitude = 90 'Pi/2
 			bank = 0
-			If TGlobal.Log_Assimp Then DebugLog " aiMatrix4x4 Decompose: singularity at north pole"
+			If TGlobal3D.Log_Assimp Then DebugLog " aiMatrix4x4 Decompose: singularity at north pole"
 			Return
 		EndIf
 		
@@ -124,7 +124,7 @@ Type aiMatrix4x4Ex Extends aiMatrix4x4
 			heading = ATan2(rm.a3, rm.c3)
 			attitude = -90 '-Pi/2
 			bank = 0
-			If TGlobal.Log_Assimp Then DebugLog " aiMatrix4x4 Decompose: singularity at south pole"
+			If TGlobal3D.Log_Assimp Then DebugLog " aiMatrix4x4 Decompose: singularity at south pole"
 			Return
 		EndIf
 		
@@ -231,7 +231,7 @@ Type aiString ' Represents an UTF-8 string, zero byte terminated, used instead o
 	
 	Method SetCString( s:String )
 	
-		If s.length < MAXLEN Then MemCopy(data, s, s.length)
+		If s.length < MAXLEN Then MemCopy(data, s, Size_T(s.length))
 		
 	End Method
 	
@@ -307,12 +307,12 @@ Type aiMaterialPropertyEx Extends aiMaterialProperty
 		mp.mData = GetBytePtrAddress(pOffset)
 		
 		Rem
-		If TGlobal.Log_Assimp Then DebugLog " mp.mKey="+mp.mKey.GetCString()
-		If TGlobal.Log_Assimp Then DebugLog " mp.mSemantic="+mp.mSemantic
-		If TGlobal.Log_Assimp Then DebugLog " mp.mIndex="+mp.mIndex
-		If TGlobal.Log_Assimp Then DebugLog " mp.mDataLength="+mp.mDataLength
-		If TGlobal.Log_Assimp Then DebugLog " mp.mType="+mp.mType
-		If TGlobal.Log_Assimp Then DebugLog " mp.mData="+mp.mData
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mKey="+mp.mKey.GetCString()
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mSemantic="+mp.mSemantic
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mIndex="+mp.mIndex
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mDataLength="+mp.mDataLength
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mType="+mp.mType
+		If TGlobal3D.Log_Assimp Then DebugLog " mp.mData="+mp.mData
 		EndRem
 		
 		Return mp
@@ -436,29 +436,29 @@ Type aiMaterialEx Extends aiMaterial
 			names[id] = mProperties[id].mKey.GetCString()
 			
 			Rem
-			If TGlobal.Log_Assimp Then DebugLog " Property key: "+mProperties[id].mKey.GetCString()
-			If TGlobal.Log_Assimp Then DebugLog " Property type: "+mProperties[id].mType
-			If TGlobal.Log_Assimp Then DebugLog " Property index "+mProperties[id].mIndex
-			If TGlobal.Log_Assimp Then DebugLog " Property length "+mProperties[id].mDataLength
-			If TGlobal.Log_Assimp Then DebugLog " Property semantic: "+mProperties[id].mSemantic
+			If TGlobal3D.Log_Assimp Then DebugLog " Property key: "+mProperties[id].mKey.GetCString()
+			If TGlobal3D.Log_Assimp Then DebugLog " Property type: "+mProperties[id].mType
+			If TGlobal3D.Log_Assimp Then DebugLog " Property index "+mProperties[id].mIndex
+			If TGlobal3D.Log_Assimp Then DebugLog " Property length "+mProperties[id].mDataLength
+			If TGlobal3D.Log_Assimp Then DebugLog " Property semantic: "+mProperties[id].mSemantic
 			
 			Select mProperties[id].mType
 				Case aiPTI_Float
 					For Local index:Int = 0 Until (mProperties[id].mDataLength / 4)
-						If TGlobal.Log_Assimp Then DebugLog " Property data Float: "+mProperties[id].GetFloatValue(index)
+						If TGlobal3D.Log_Assimp Then DebugLog " Property data Float: "+mProperties[id].GetFloatValue(index)
 					Next
 					
 				Case aiPTI_String
-					If TGlobal.Log_Assimp Then DebugLog " Property data String: "+mProperties[id].GetStringValue()
+					If TGlobal3D.Log_Assimp Then DebugLog " Property data String: "+mProperties[id].GetStringValue()
 					
 				Case aiPTI_Integer
 					For Local index:Int = 0 Until (mProperties[id].mDataLength / 4)
-						If TGlobal.Log_Assimp Then DebugLog " Property data Int: "+mProperties[id].GetIntValue(index)
+						If TGlobal3D.Log_Assimp Then DebugLog " Property data Int: "+mProperties[id].GetIntValue(index)
 					Next
 					
 				Case aiPTI_Buffer
 					For Local index:Int = 0 Until mProperties[id].mDataLength
-						If TGlobal.Log_Assimp Then DebugLog " Property data Byte: "+mProperties[id].GetByteValue(index)
+						If TGlobal3D.Log_Assimp Then DebugLog " Property data Byte: "+mProperties[id].GetByteValue(index)
 					Next
 					
 			End Select
@@ -480,7 +480,7 @@ Type aiMaterialEx Extends aiMaterial
 		If retVal = AI_SUCCESS
 			Return String.FromCString(Varptr as.data[SizeOf(as.length)]) ' 4/8
 		Else
-			If TGlobal.Log_Assimp Then DebugLog " GetMaterialString failed with code: "+retVal
+			If TGlobal3D.Log_Assimp Then DebugLog " GetMaterialString failed with code: "+retVal
 		EndIf
 		
 	End Method
@@ -527,7 +527,7 @@ Type aiMaterialEx Extends aiMaterial
 		If retVal = AI_SUCCESS
 			Return String.FromCString(Varptr as.data[SizeOf(as.length)]) ' 4/8
 		Else
-			If TGlobal.Log_Assimp Then DebugLog " GetMaterialTexture failed with code: "+retVal
+			If TGlobal3D.Log_Assimp Then DebugLog " GetMaterialTexture failed with code: "+retVal
 		EndIf
 		
 	End Method
@@ -936,10 +936,10 @@ Type aiNodeEx Extends aiNode
 			node.mMeshes[id] = pMeshes[id]
 		Next
 		
-		If TGlobal.Log_Assimp Then DebugLog " node.mName: "+node.mName.GetCString()
-		If TGlobal.Log_Assimp And parent <> Null Then DebugLog "node.mParent.mName: "+node.mParent.mName.GetCString()
-		If TGlobal.Log_Assimp Then DebugLog " node.mNumChildren: "+node.mNumChildren
-		If TGlobal.Log_Assimp Then DebugLog " node.mNumMeshes: "+node.mNumMeshes
+		If TGlobal3D.Log_Assimp Then DebugLog " node.mName: "+node.mName.GetCString()
+		If TGlobal3D.Log_Assimp And parent <> Null Then DebugLog "node.mParent.mName: "+node.mParent.mName.GetCString()
+		If TGlobal3D.Log_Assimp Then DebugLog " node.mNumChildren: "+node.mNumChildren
+		If TGlobal3D.Log_Assimp Then DebugLog " node.mNumMeshes: "+node.mNumMeshes
 		
 		Return node
 		
@@ -1019,13 +1019,16 @@ Type aiSceneEx Extends aiScene
 	
 		Local filename:String = String(url)
 		Local ext:String = filename[filename.FindLast(".")+1..]
-		
+		?ptr64
+		Local bufLen:Long = StreamSize(stream)
+		?Not ptr64
 		Local bufLen:Int = StreamSize(stream)
-		Local buffer:Byte Ptr = MemAlloc(bufLen)
-		Local ram:TRamStream = CreateRamStream(buffer, bufLen, True, True)
+		?
+		Local buffer:Byte Ptr = MemAlloc(Size_T(bufLen))
+		Local ram:TRamStream = CreateRamStream(buffer, Size_T(bufLen), True, True)
 		CopyStream(stream, ram)
 		
-		pScene = aiImportFileFromMemoryWithProperties(buffer, bufLen, readflags, ext, props)
+		pScene = aiImportFileFromMemoryWithProperties(buffer, Int(bufLen), readflags, ext, props)
 		
 		CloseStream(ram)
 		MemFree(buffer)
@@ -1043,12 +1046,16 @@ Type aiSceneEx Extends aiScene
 		If filename[..5] = "zip::" ' load zip mesh (ram stream by Pertubatio)
 		
 			Local stream:TStream = CreateBufferedStream(filename)
+			?ptr64
+			Local bufLen:Long = StreamSize(stream)
+			?Not ptr64
 			Local bufLen:Int = StreamSize(stream)
-			Local buffer:Byte Ptr = MemAlloc(bufLen)
-			Local ram:TRamStream = CreateRamStream(buffer, bufLen, True, True)
+			?
+			Local buffer:Byte Ptr = MemAlloc(Size_T(bufLen))
+			Local ram:TRamStream = CreateRamStream(buffer, Size_T(bufLen), True, True)
 			CopyStream(stream, ram)
 			
-			pScene = aiImportFileFromMemoryWithProperties(buffer, bufLen, readflags, ext, props)
+			pScene = aiImportFileFromMemoryWithProperties(buffer, Int(bufLen), readflags, ext, props)
 			
 			MemFree(buffer)
 			CloseStream(stream)
@@ -1093,9 +1100,9 @@ Type aiSceneEx Extends aiScene
 		scene.pMeshes = GetLongPtrAddress(pOffset)
 		scene.mMeshes = scene.mMeshes[..scene.mNumMeshes]
 		
-		If TGlobal.Log_Assimp Then DebugLog " scene.mFlags: "+scene.mFlags
-		If TGlobal.Log_Assimp Then DebugLog " scene.mNumMeshes: "+scene.mNumMeshes
-		If TGlobal.Log_Assimp Then DebugLog " scene.pMeshes: "+scene.pMeshes
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mFlags: "+scene.mFlags
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mNumMeshes: "+scene.mNumMeshes
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.pMeshes: "+scene.pMeshes
 		
 		For Local id:Int = 0 To scene.mNumMeshes - 1
 		
@@ -1231,23 +1238,23 @@ Type aiSceneEx Extends aiScene
 			scene.mMeshes[id].mName = New aiString
 			scene.mMeshes[id].mName.SetCString( String.FromCString(pMeshOffset) )
 			
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes id: "+id
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mPrimitiveTypes: "+scene.mMeshes[id].mPrimitiveTypes 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mNumVertices: "+scene.mMeshes[id].mNumVertices 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mNumFaces: "+scene.mMeshes[id].mNumFaces 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pVertices: "+scene.mMeshes[id].pVertices 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pNormals: "+scene.mMeshes[id].pNormals 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pTangents: "+scene.mMeshes[id].pTangents 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pBitangents: "+scene.mMeshes[id].pBitangents 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pColors[0]: "+scene.mMeshes[id].pColors[0]
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pTextureCoords[0]: "+scene.mMeshes[id].pTextureCoords[0]
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pTextureCoords[1]: "+scene.mMeshes[id].pTextureCoords[1]
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mNumUVComponents[0]: "+scene.mMeshes[id].mNumUVComponents[0]
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pFaces: "+scene.mMeshes[id].pFaces
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mNumBones: "+scene.mMeshes[id].mNumBones 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].pBones: "+scene.mMeshes[id].pBones 
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mMaterialIndex: "+scene.mMeshes[id].mMaterialIndex
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMeshes[].mName: "+scene.mMeshes[id].mName.GetCString()
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes id: "+id
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mPrimitiveTypes: "+scene.mMeshes[id].mPrimitiveTypes 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mNumVertices: "+scene.mMeshes[id].mNumVertices 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mNumFaces: "+scene.mMeshes[id].mNumFaces 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pVertices: "+scene.mMeshes[id].pVertices 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pNormals: "+scene.mMeshes[id].pNormals 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pTangents: "+scene.mMeshes[id].pTangents 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pBitangents: "+scene.mMeshes[id].pBitangents 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pColors[0]: "+scene.mMeshes[id].pColors[0]
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pTextureCoords[0]: "+scene.mMeshes[id].pTextureCoords[0]
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pTextureCoords[1]: "+scene.mMeshes[id].pTextureCoords[1]
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mNumUVComponents[0]: "+scene.mMeshes[id].mNumUVComponents[0]
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pFaces: "+scene.mMeshes[id].pFaces
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mNumBones: "+scene.mMeshes[id].mNumBones 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].pBones: "+scene.mMeshes[id].pBones 
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mMaterialIndex: "+scene.mMeshes[id].mMaterialIndex
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMeshes[].mName: "+scene.mMeshes[id].mName.GetCString()
 			
 		Next
 		
@@ -1258,8 +1265,8 @@ Type aiSceneEx Extends aiScene
 		scene.pMaterials = GetLongPtrAddress(pOffset)
 		scene.mMaterials = scene.mMaterials[..scene.mNumMaterials]
 		
-		If TGlobal.Log_Assimp Then DebugLog " scene.mNumMaterials: "+scene.mNumMaterials
-		If TGlobal.Log_Assimp Then DebugLog " scene.pMaterials: "+scene.pMaterials
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mNumMaterials: "+scene.mNumMaterials
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.pMaterials: "+scene.pMaterials
 		
 		For Local id:Int = 0 To scene.mNumMaterials - 1
 			scene.mMaterials[id] = New aiMaterialEx
@@ -1274,9 +1281,9 @@ Type aiSceneEx Extends aiScene
 			pMaterialOffset :+ SizeOf(scene.mMaterials[id].mNumProperties) ' 4
 			scene.mMaterials[id].mNumAllocated = Int Ptr( pMaterialOffset )[0]
 			
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMaterials[] id: "+id
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMaterials[].mNumProperties: "+scene.mMaterials[id].mNumProperties
-			If TGlobal.Log_Assimp Then DebugLog " scene.mMaterials[].mNumAllocated: "+scene.mMaterials[id].mNumAllocated
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMaterials[] id: "+id
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMaterials[].mNumProperties: "+scene.mMaterials[id].mNumProperties
+			If TGlobal3D.Log_Assimp Then DebugLog " scene.mMaterials[].mNumAllocated: "+scene.mMaterials[id].mNumAllocated
 			
 			pMaterialOffset = scene.mMaterials[id].pProperties
 			scene.mMaterials[id].mProperties = scene.mMaterials[id].mProperties[..scene.mMaterials[id].mNumProperties]
@@ -1296,8 +1303,8 @@ Type aiSceneEx Extends aiScene
 		scene.pAnimations = GetLongPtrAddress(pOffset)
 		scene.mAnimations = scene.mAnimations[..scene.mNumAnimations]
 		
-		If TGlobal.Log_Assimp Then DebugLog " scene.mNumAnimations: "+scene.mNumAnimations
-		If TGlobal.Log_Assimp Then DebugLog " scene.pAnimations: "+scene.pAnimations
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mNumAnimations: "+scene.mNumAnimations
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.pAnimations: "+scene.pAnimations
 		
 		pOffset :+ SizeOf(scene.pAnimations) ' 4/8
 		scene.mNumTextures = Int Ptr( pOffset )[0]
@@ -1306,8 +1313,8 @@ Type aiSceneEx Extends aiScene
 		scene.pTextures = GetLongPtrAddress(pOffset)
 		scene.mTextures = scene.mTextures[..scene.mNumTextures]
 		
-		If TGlobal.Log_Assimp Then DebugLog " scene.mNumTextures: "+scene.mNumTextures
-		If TGlobal.Log_Assimp Then DebugLog " scene.pTextures: "+scene.pTextures
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mNumTextures: "+scene.mNumTextures
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.pTextures: "+scene.pTextures
 		
 	End Function
 	

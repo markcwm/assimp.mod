@@ -59,8 +59,8 @@ Type TAssimpLoader
 			
 			scene.ReleaseImport() ' only when pointer valid
 		Else
-			If TGlobal.Log_Assimp Then DebugLog " Nothing imported: "+String(url)
-			If TGlobal.Log_Assimp Then DebugLog " Error: "+String.FromCString( aiGetErrorString() )
+			If TGlobal3D.Log_Assimp Then DebugLog " Nothing imported: "+String(url)
+			If TGlobal3D.Log_Assimp Then DebugLog " Error: "+String.FromCString( aiGetErrorString() )
 		EndIf
 		
 		Return root
@@ -76,10 +76,10 @@ Type TAssimpLoader
 		For Local mat:aiMaterialEx = EachIn scene.mMaterials
 		
 			Rem
-			If TGlobal.Log_Assimp Then DebugLog " mat Name: "+mat.GetMaterialName() ' ?mat.name
-			If TGlobal.Log_Assimp Then DebugLog " mat IsTwoSided: "+mat.IsTwoSided() ' $mat.twosided
-			If TGlobal.Log_Assimp Then DebugLog " mat GetShininess: "+mat.GetShininess() ' $mat.shininess
-			If TGlobal.Log_Assimp Then DebugLog " mat GetAlpha: "+mat.GetAlpha() ' $mat.opacity
+			If TGlobal3D.Log_Assimp Then DebugLog " mat Name: "+mat.GetMaterialName() ' ?mat.name
+			If TGlobal3D.Log_Assimp Then DebugLog " mat IsTwoSided: "+mat.IsTwoSided() ' $mat.twosided
+			If TGlobal3D.Log_Assimp Then DebugLog " mat GetShininess: "+mat.GetShininess() ' $mat.shininess
+			If TGlobal3D.Log_Assimp Then DebugLog " mat GetAlpha: "+mat.GetAlpha() ' $mat.opacity
 			EndRem
 			
 			Local names:String[] = mat.GetPropertyNames()
@@ -89,22 +89,22 @@ Type TAssimpLoader
 				
 				Select s
 					Case AI_MATKEY_NAME ' $mat.name
-						If TGlobal.Log_Assimp Then DebugLog ps+mat.GetMaterialString(s)
+						If TGlobal3D.Log_Assimp Then DebugLog ps+mat.GetMaterialString(s)
 						
 					Case AI_MATKEY_SHADING_MODEL, AI_MATKEY_TWOSIDED
 						Local ivalue:Int[] = mat.GetMaterialIntegerArray(s)
-						If TGlobal.Log_Assimp And ivalue.length Then DebugLog ps+ivalue[0]
+						If TGlobal3D.Log_Assimp And ivalue.length Then DebugLog ps+ivalue[0]
 						
 					Case AI_MATKEY_OPACITY, AI_MATKEY_SHININESS, AI_MATKEY_REFRACTI
 						Local fvalue:Float[] = mat.GetMaterialFloatArray(s)
-						If TGlobal.Log_Assimp And fvalue.length Then DebugLog ps+fvalue[0]
+						If TGlobal3D.Log_Assimp And fvalue.length Then DebugLog ps+fvalue[0]
 						
 					Case AI_MATKEY_COLOR_AMBIENT, AI_MATKEY_COLOR_DIFFUSE, AI_MATKEY_COLOR_SPECULAR, AI_MATKEY_COLOR_EMISSIVE
 						Local fvalue:Float[] = mat.GetMaterialFloatArray(s)
-						If TGlobal.Log_Assimp And fvalue.length > 2 Then DebugLog ps+fvalue[0]+", "+fvalue[1]+", "+fvalue[2]
+						If TGlobal3D.Log_Assimp And fvalue.length > 2 Then DebugLog ps+fvalue[0]+", "+fvalue[1]+", "+fvalue[2]
 						
 					Case AI_MATKEY_TEXTURE_BASE ' $tex.file
-						If TGlobal.Log_Assimp Then DebugLog ps+mat.GetMaterialTexture(aiTextureType_DIFFUSE)
+						If TGlobal3D.Log_Assimp Then DebugLog ps+mat.GetMaterialTexture(aiTextureType_DIFFUSE)
 						
 				End Select
 			Next
@@ -127,7 +127,7 @@ Type TAssimpLoader
 			
 			Local texFilename:String = mat.GetMaterialTexture(aiTextureType_DIFFUSE)
 			
-			If TGlobal.Log_Assimp Then DebugLog " TEXTURE filename: "+texFilename
+			If TGlobal3D.Log_Assimp Then DebugLog " TEXTURE filename: "+texFilename
 			
 			If Len(texFilename) > 0
 			
@@ -143,7 +143,7 @@ Type TAssimpLoader
 					texFilename = ExtractDir(String(url)) + "/" + StripDir(texFilename)
 				EndIf
 				
-				If TGlobal.Log_Assimp Then DebugLog " new filename: "+texFilename
+				If TGlobal3D.Log_Assimp Then DebugLog " new filename: "+texFilename
 				
 				Local tex:TTexture = LoadTexture(texFilename, tex_flags)
 				
@@ -157,7 +157,7 @@ Type TAssimpLoader
 			id:+1
 		Next
 		
-		If TGlobal.Log_Assimp Then DebugLog " scene.mNumMeshes: "+scene.mNumMeshes
+		If TGlobal3D.Log_Assimp Then DebugLog " scene.mNumMeshes: "+scene.mNumMeshes
 		
 		' Make mesh - was ProccessAiNodeAndChildren()
 		
@@ -172,7 +172,7 @@ Type TAssimpLoader
 			mesh.SetString(mesh.name, scene.mRootNode.mName.GetCString())
 			root = mesh
 			
-			If TGlobal.Log_Assimp Then DebugLog " Mesh name: "+scene.mRootNode.mName.GetCString()
+			If TGlobal3D.Log_Assimp Then DebugLog " Mesh name: "+scene.mRootNode.mName.GetCString()
 		EndIf
 		
 		For Local am:aiMeshEx = EachIn scene.mMeshes
@@ -187,12 +187,12 @@ Type TAssimpLoader
 					mesh.SetString(mesh.name, scene.mRootNode.mName.GetCString())
 					root = mesh
 					
-					If TGlobal.Log_Assimp Then DebugLog " Mesh name: "+scene.mRootNode.mName.GetCString()
+					If TGlobal3D.Log_Assimp Then DebugLog " Mesh name: "+scene.mRootNode.mName.GetCString()
 				ElseIf child_id < scene.mRootNode.mChildren.length ' root node has children
 					mesh.AddParent(root)
 					mesh.SetString(mesh.name, scene.mRootNode.mChildren[child_id].mName.GetCString())
 					
-					If TGlobal.Log_Assimp Then DebugLog " Mesh child name: "+scene.mRootNode.mChildren[child_id].mName.GetCString()
+					If TGlobal3D.Log_Assimp Then DebugLog " Mesh child name: "+scene.mRootNode.mChildren[child_id].mName.GetCString()
 					child_id:+1
 				EndIf
 			EndIf
@@ -219,20 +219,20 @@ Type TAssimpLoader
 					VertexColor(surf, index, am.VertexRed(id), am.VertexGreen(id), am.VertexBlue(id), am.VertexAlpha(id))
 				EndIf
 				
-				If am.HasTangentsAndBitangents()
-					VertexTangent(surf, index, am.VertexTX(id), am.VertexTY(id), am.VertexTZ(id))
-					VertexBitangent(surf, index, am.VertexBX(id), am.VertexBY(id), am.VertexBZ(id))
-				EndIf
+				'If am.HasTangentsAndBitangents()
+				'	VertexTangent(surf, index, am.VertexTX(id), am.VertexTY(id), am.VertexTZ(id))
+				'	VertexBitangent(surf, index, am.VertexBX(id), am.VertexBY(id), am.VertexBZ(id))
+				'EndIf
 			Next
 			
-			If TGlobal.Log_Assimp
+			If TGlobal3D.Log_Assimp
 				DebugLog " Vertex(0): "+am.VertexX(0)+", "+am.VertexY(0)+", "+am.VertexZ(0)
 				If am.HasNormals() Then DebugLog " VertexNormal(0): "+am.VertexNX(0)+", "+am.VertexNY(0)+", "+am.VertexNZ(0)
 				If am.HasTextureCoords(0) Then DebugLog " VertexTexCoords(0,0): "+am.VertexU(0)+", "+am.VertexV(0)+", "+am.VertexW(0)
 				If am.HasTextureCoords(1) Then DebugLog " VertexTexCoords(0,1): "+am.VertexU(0,1)+", "+am.VertexV(0,1)+", "+am.VertexW(0,1)
 				If am.HasVertexColors(0) Then DebugLog " VertexColor(0): "+am.VertexRed(0)+", "+am.VertexGreen(0)+", "+am.VertexBlue(0)+", "+am.VertexAlpha(0)
-				If am.HasTangentsAndBitangents() Then DebugLog " VertexTangent(0): "+am.VertexTX(0)+", "+am.VertexTY(0)+", "+am.VertexTZ(0)
-				If am.HasTangentsAndBitangents() Then DebugLog " VertexBitangent(0): "+am.VertexBX(0)+", "+am.VertexBY(0)+", "+am.VertexBZ(0)
+				'If am.HasTangentsAndBitangents() Then DebugLog " VertexTangent(0): "+am.VertexTX(0)+", "+am.VertexTY(0)+", "+am.VertexTZ(0)
+				'If am.HasTangentsAndBitangents() Then DebugLog " VertexBitangent(0): "+am.VertexBX(0)+", "+am.VertexBY(0)+", "+am.VertexBZ(0)
 			EndIf
 			
 			For id = 0 To am.mNumFaces - 1
@@ -248,8 +248,8 @@ Type TAssimpLoader
 				If t2 < 0 Or t2 >= am.mNumVertices Then invalidIndex = True
 				
 				If invalidIndex
-					If TGlobal.Log_Assimp Then DebugLog " TriangleVertex index out of range for triangle: "+id
-					If TGlobal.Log_Assimp Then DebugLog " t0="+t0+", t1="+t1+", t2="+t2
+					If TGlobal3D.Log_Assimp Then DebugLog " TriangleVertex index out of range for triangle: "+id
+					If TGlobal3D.Log_Assimp Then DebugLog " t0="+t0+", t1="+t1+", t2="+t2
 				Else
 					AddTriangle(surf, t0, t1, t2)
 				EndIf

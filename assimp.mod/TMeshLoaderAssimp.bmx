@@ -9,9 +9,9 @@ Type TMeshLoaderAssimp Extends TMeshLoader
 	
 	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
 	
-		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 4)) Then Return Null
+		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 4)) Then Return Null
 		
-		Local anim_mesh:TMesh=TAssimpLoader.LoadAnimAssimp(Null, url, parent, TGlobal.Mesh_Flags)
+		Local anim_mesh:TMesh=TAssimpLoader.LoadAnimAssimp(Null, url, parent, TGlobal3D.Mesh_Flags)
 		
 		If anim_mesh=Null Then Return Null
 		anim_mesh.HideEntity()
@@ -36,9 +36,9 @@ Type TMeshLoaderAssimp Extends TMeshLoader
 	
 	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
 	
-		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 4)) Then Return Null
+		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 4)) Then Return Null
 		
-		Return TAssimpLoader.LoadAnimAssimp(Null, url, parent, TGlobal.Mesh_Flags)
+		Return TAssimpLoader.LoadAnimAssimp(Null, url, parent, TGlobal3D.Mesh_Flags)
 		
 	End Method
 	
@@ -54,9 +54,9 @@ Type TMeshLoaderAssimpStream Extends TMeshLoader
 	
 	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
 	
-		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 8)) Then Return Null
+		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 8)) Then Return Null
 		
-		Local anim_mesh:TMesh=TAssimpLoader.LoadAnimAssimp(file, url, parent, TGlobal.Mesh_Flags)
+		Local anim_mesh:TMesh=TAssimpLoader.LoadAnimAssimp(file, url, parent, TGlobal3D.Mesh_Flags)
 		
 		If anim_mesh=Null Then Return Null
 		anim_mesh.HideEntity()
@@ -81,9 +81,9 @@ Type TMeshLoaderAssimpStream Extends TMeshLoader
 	
 	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
 	
-		If Not (TGlobal.Mesh_Loader=0 Or (TGlobal.Mesh_Loader & 8)) Then Return Null
+		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 8)) Then Return Null
 		
-		Return TAssimpLoader.LoadAnimAssimp(file, url, parent, TGlobal.Mesh_Flags)
+		Return TAssimpLoader.LoadAnimAssimp(file, url, parent, TGlobal3D.Mesh_Flags)
 		
 	End Method
 	

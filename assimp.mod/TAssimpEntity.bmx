@@ -333,7 +333,7 @@ Type TAssimpHelper
 		Local folder:Byte Ptr = ReadDir(dir)
 		Local file:String
 		
-		If TGlobal.Log_Assimp Then DebugLog "dir: " + dir
+		If TGlobal3D.Log_Assimp Then DebugLog "dir: " + dir
 		
 		Repeat
 			file = NextFile(folder)
@@ -344,13 +344,13 @@ Type TAssimpHelper
 				
 				If FileType(fullPath) = FILETYPE_DIR
 				
-					If TGlobal.Log_Assimp Then DebugLog "file: " + file
+					If TGlobal3D.Log_Assimp Then DebugLog "file: " + file
 					
 					'If(dir[0]) <> "."
 						EnumFiles(list, fullPath, skipExt)
 					'EndIf
 				Else
-					If TGlobal.Log_Assimp Then DebugLog "fullPath: " + fullPath
+					If TGlobal3D.Log_Assimp Then DebugLog "fullPath: " + fullPath
 					
 					If aiIsExtensionSupported("." + Lower(ExtractExt(fullPath)))
 					

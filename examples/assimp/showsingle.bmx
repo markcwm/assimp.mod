@@ -27,7 +27,7 @@ Local mesh:TMesh
 ' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak file to protect assets.
 'SetZipStreamPassword zipfile,"blitzmax"
 
-TGlobal.Log_Assimp=1 ' debug data
+TGlobal3D.Log_Assimp=1 ' debug data
 MeshLoader "assimp",-1 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
 'MeshLoader "assimpstream",-1 ' use assimp streams
 
@@ -37,9 +37,9 @@ Select test
 		Local time:Int=MilliSecs()
 		'mesh=LoadAnimMesh("../media/zombie.b3d")
 		'mesh=LoadAnimMesh("../media/rallycar1.3ds")
-		'mesh=LoadAnimMesh("../../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' note: OBJ materials don't load from stream
-		'mesh=LoadAnimMesh("../../../openb3dmax.help/media/tris.md2")
-		mesh=LoadAnimMesh("../../../openb3dmax.help/media/bath/RomanBath.b3d")
+		mesh=LoadAnimMesh("../../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' note: OBJ materials don't load from stream
+		'mesh=LoadAnimMesh("../../../openb3dmax.docs/media/tris.md2")
+		'mesh=LoadAnimMesh("../../../openb3dmax.docs/media/bath/RomanBath.b3d")
 		
 		DebugLog "assimp time="+Abs(MilliSecs()-time)
 		
