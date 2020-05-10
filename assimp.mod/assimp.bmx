@@ -3,25 +3,25 @@
 Strict
 
 Rem
-bbdoc: Assimp for Openb3d
+bbdoc: Assimp for Openb3dmax
 about: Assimp mesh loader and a few helper functions. 
-To build Assimp use @{bmk makemods -a -w -g x64 openb3dmaxlibs.assimp}.
+To build Assimp use @{bmk makemods -a -w -g x64 scheutz.assimp}.
 Requires BaH.Boost source and Koriolis.Zipstream module binaries, see source links below.
 To get BaH.Boost with Subversion open command-line and be sure you "cd" to bah.mod before checkout.
 End Rem
-Module Openb3dmaxlibs.Assimp
+Module Scheutz.Assimp
 
 ModuleInfo "Version: 0.42"
 ModuleInfo "License: BSD-3-Clause"
-ModuleInfo "Copyright: Wrapper - 2009-2018 Peter Scheutz"
+ModuleInfo "Copyright: Wrapper - 2009 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
-ModuleInfo "Source: https://github.com/markcwm/openb3dmaxlibs.mod"
+ModuleInfo "Source: https://github.com/markcwm/scheutz.mod"
 ModuleInfo "Source: svn checkout https://github.com/maxmods/bah.mod/trunk/boost.mod"
 ModuleInfo "Source: https://github.com/maxmods/koriolis.mod"
 ModuleInfo "Source: https://github.com/assimp/assimp"
 
 Import Openb3dmax.Openb3dmax
-Import Openb3dmaxlibs.Assimplib
+Import Scheutz.Assimplib
 
 Include "aitypes.bmx"
 Include "TAssimpLoader.bmx"
