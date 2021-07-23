@@ -23,13 +23,13 @@ HideEntity sphere
 
 Local mesh:TMesh
 
-' Note: you can load password protected zips but these are easily opened with 7zip as the filenames are not encrypted, 
-' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak file to protect assets.
+' you can load password protected zips but they can be opened with 7zip as the filenames are not encrypted, 
+' a zip inside a password zip is encrypted but zipstream can't open these, so use custom pak files instead
 'SetZipStreamPassword zipfile,"blitzmax"
 
-TGlobal3D.Log_Assimp=1 ' debug data
-MeshLoader "assimp",-1 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
-'MeshLoader "assimpstream",-1 ' use assimp streams
+UseMeshDebugLog 1 ' debug data
+UseAssimpStreamMeshes 0,-1 ' use Assimp direct, -1 smooth normals, -2 flat shaded, -4 single mesh
+'UseAssimpStreamMeshes 1,-1 ' use Assimp streams
 
 Local test%=1
 Select test
@@ -57,8 +57,8 @@ Select test
 		DebugLog "zip time="+Abs(MilliSecs()-time)
 		
 	Default ' load library mesh
-		MeshLoader "cpp"
-		TextureLoader "cpp"
+		UseLibraryMeshes 1
+		UseLibraryTextures 1
 		
 		Local time:Int=MilliSecs()
 		mesh=LoadAnimMesh("../media/zombie.b3d")

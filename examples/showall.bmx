@@ -25,9 +25,9 @@ Local path$
 path = "../assimplib.mod/assimp/test/models"
 If FileSize(path)=-1 Then Print "Error: path not found"
 
-'TGlobal3D.Log_Assimp=1 ' debug data
-MeshLoader "assimp",-2-4 ' use assimp from file, -1 smooth normals, -2 flat shaded, -4 single mesh
-'MeshLoader "assimpstream",-2-4 ' use assimp streams
+'UseMeshDebugLog 1 ' debug data
+UseAssimpStreamMeshes 0,-2-4 ' use Assimp direct, -1 smooth normals, -2 flat shaded, -4 single mesh
+'UseAssimpStreamMeshes 1,-2-4 ' use Assimp streams
 
 'skipExt.addlast("xml")
 'skipExt.addlast("nff")
@@ -37,7 +37,7 @@ MeshLoader "assimp",-2-4 ' use assimp from file, -1 smooth normals, -2 flat shad
 'skipExt.addlast("ifc")
 'skipExt.addlast("irrmesh")
 
-Local test%=0
+Local test%=1
 Select test
 	Case 0 ' load all formats
 		EnumFiles( filelist,path,skipExt )
