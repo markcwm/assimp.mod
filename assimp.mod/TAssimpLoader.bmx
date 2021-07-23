@@ -5,23 +5,9 @@ Type TAssimpLoader
 	Function LoadAnimAssimp:TMesh( stream:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		' see: assimp.sourceforge.net/lib_html/postprocess_8h.html
-		Local readflags:Int = aiProcess_FlipUVs | ..
-		aiProcess_Triangulate | ..
-		aiProcess_GenUVCoords | ..
-		aiProcess_SortByPType | ..
-		aiProcess_MakeLeftHanded | ..
-		aiProcess_FindInvalidData | ..
-		aiProcess_FindDegenerates | ..
-		'aiProcess_OptimizeMeshes | ..
-		aiProcess_SplitByBoneCount | ..
-		aiProcess_LimitBoneWeights | ..
-		aiProcess_SplitLargeMeshes | ..
-		aiProcess_FlipWindingOrder | ..
-		aiProcess_CalcTangentSpace | ..
-		aiProcess_TransformUVCoords | ..
-		aiProcess_PreTransformVertices | ..
+		Local readflags:Int = aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType | aiProcess_MakeLeftHanded | aiProcess_FindInvalidData | aiProcess_FindDegenerates | aiProcess_SplitByBoneCount | aiProcess_LimitBoneWeights | aiProcess_SplitLargeMeshes | aiProcess_FlipWindingOrder | aiProcess_CalcTangentSpace | aiProcess_TransformUVCoords | aiProcess_PreTransformVertices | aiProcess_RemoveRedundantMaterials
 		'aiProcess_JoinIdenticalVertices | ..
-		aiProcess_RemoveRedundantMaterials
+		'aiProcess_OptimizeMeshes | ..
 		
 		Select flags ' crash if both flags used together
 			Case -1

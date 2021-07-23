@@ -7,7 +7,7 @@ Type TMeshLoaderAssimp Extends TMeshLoader
 		
 	End Method
 	
-	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
+	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 4)) Then Return Null
 		
@@ -34,7 +34,7 @@ Type TMeshLoaderAssimp Extends TMeshLoader
 		
 	End Method
 	
-	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
+	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 4)) Then Return Null
 		
@@ -52,7 +52,7 @@ Type TMeshLoaderAssimpStream Extends TMeshLoader
 		
 	End Method
 	
-	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
+	Method LoadMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 8)) Then Return Null
 		
@@ -79,7 +79,7 @@ Type TMeshLoaderAssimpStream Extends TMeshLoader
 		
 	End Method
 	
-	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null )
+	Method LoadAnimMesh:TMesh( file:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		If Not (TGlobal3D.Mesh_Loader=0 Or (TGlobal3D.Mesh_Loader & 8)) Then Return Null
 		
