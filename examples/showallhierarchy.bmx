@@ -3,7 +3,7 @@
 
 Strict
 
-Framework Openb3dmax.B3dglgraphics
+Framework Openb3d.B3dglgraphics
 Import Scheutz.Assimp
 
 Graphics3D DesktopWidth(),DesktopHeight(),0,2

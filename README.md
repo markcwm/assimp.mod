@@ -3,7 +3,7 @@ Scheutz.Assimp
 
 #### Assimp (Open Asset Import) ####
 
-Assimp 3.2 library wrapper for OpenB3DMax.
+Assimp 3.2 library wrapper for OpenB3D.
 
 Assimp source is included with this module and [Boost](http://www.boost.org/users/history/) is required, specifically [BaH.Boost](https://github.com/maxmods/bah.mod). There is a Boost workaround option which can be enabled in assimplib.bmx (and then comment the boost imports in source.bmx) but this is not recommended as it lacks threads and is not threadsafe ie. can't be access by more than one thread at a time. To enable a specific importer or post processing step, comment out the define in assimplib.bmx, then uncomment the imports in source.bmx.
 

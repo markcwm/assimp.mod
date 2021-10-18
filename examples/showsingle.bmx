@@ -2,7 +2,7 @@
 
 Strict
 
-Framework Openb3dmax.B3dglgraphics
+Framework Openb3d.B3dglgraphics
 Import Scheutz.Assimp
 
 Incbin "../media/zombie.b3d"
@@ -38,8 +38,8 @@ Select test
 		'mesh=LoadAnimMesh("../media/zombie.b3d")
 		'mesh=LoadAnimMesh("../media/rallycar1.3ds")
 		mesh=LoadAnimMesh("../assimplib.mod/assimp/test/models/OBJ/spider.obj") ' note: OBJ materials don't load from stream
-		'mesh=LoadAnimMesh("../../../openb3dmax.docs/media/tris.md2")
-		'mesh=LoadAnimMesh("../../../openb3dmax.docs/media/bath/RomanBath.b3d")
+		'mesh=LoadAnimMesh("../../../openb3d.docs/media/tris.md2")
+		'mesh=LoadAnimMesh("../../../openb3d.docs/media/bath/RomanBath.b3d")
 		
 		DebugLog "assimp time="+Abs(MilliSecs()-time)
 		

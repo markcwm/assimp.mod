@@ -2,7 +2,7 @@
 
 Strict
 
-Framework Openb3dmax.B3dglgraphics
+Framework Openb3d.B3dglgraphics
 Import Scheutz.Assimp
 
 Local width%=DesktopWidth(),height%=DesktopHeight(),depth%=0,Mode%=2
