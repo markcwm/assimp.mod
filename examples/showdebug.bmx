@@ -3,7 +3,7 @@
 Strict
 
 Framework Openb3d.B3dglgraphics
-Import Scheutz.Assimp
+Import Assimp.Assimp
 
 Local width%=DesktopWidth(),height%=DesktopHeight(),depth%=0,Mode%=2
 

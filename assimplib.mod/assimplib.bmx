@@ -8,21 +8,21 @@ about: Wrapper for Assimp (Open Asset Import) library. Imported by assimp.mod.
 Requires BaH.Boost source code and Koriolis.Zipstream module binaries, see module info links.
 To get BaH.Boost by Subversion open command-line and make sure you "cd" to bah.mod before checkout.
 End Rem
-Module Scheutz.Assimplib
+Module Assimp.Assimplib
 
 ModuleInfo "Version: 0.42"
 ModuleInfo "License: BSD-3-Clause"
 ModuleInfo "Copyright: Wrapper - 2009 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
-ModuleInfo "Source: https://github.com/markcwm/scheutz.mod"
+ModuleInfo "Source: https://github.com/markcwm/assimp.mod"
 ModuleInfo "Source: svn checkout https://github.com/maxmods/bah.mod/trunk/boost.mod"
 ModuleInfo "Source: https://github.com/maxmods/koriolis.mod"
 ModuleInfo "Source: https://github.com/assimp/assimp"
 
-ModuleInfo "History: 0.41 Release Aug 2017 - update to assimp 3.2"
+ModuleInfo "History: 0.41 Release Aug 2017 - update to Assimp 3.2"
 ModuleInfo "History: 0.40 Release Aug 2017 - added zipstream, 64-bit wrapper"
 ModuleInfo "History: 0.38 Release Jul 2017 - added source wrapper, incbin streams"
-ModuleInfo "History: 0.36 Release Sep 2014 - library wrapper, update to assimp 3.1.1"
+ModuleInfo "History: 0.36 Release Sep 2014 - library wrapper, update to Assimp 3.1.1"
 ModuleInfo "History: 0.30 Release Apr 2011"
 ModuleInfo "History: 0.22 Release Nov 2009"
 ModuleInfo "History: 0.07 Initial Release Jan 2009"

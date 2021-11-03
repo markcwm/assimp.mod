@@ -4,7 +4,7 @@
 Strict
 
 Framework Openb3d.B3dglgraphics
-Import Scheutz.Assimp
+Import Assimp.Assimp
 
 Graphics3D DesktopWidth(),DesktopHeight(),0,2
 

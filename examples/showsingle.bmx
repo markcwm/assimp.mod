@@ -3,7 +3,7 @@
 Strict
 
 Framework Openb3d.B3dglgraphics
-Import Scheutz.Assimp
+Import Assimp.Assimp
 
 Incbin "../media/zombie.b3d"
 Incbin "../media/Zombie.jpg"
