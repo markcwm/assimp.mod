@@ -1,7 +1,12 @@
 
-' assimp mesh loader
+Rem
+bbdoc: Assimp mesh loader
+EndRem
 Type TAssimpLoader
 
+	Rem
+	bbdoc: Load Assimp mesh
+	EndRem
 	Function LoadAnimAssimp:TMesh( stream:TStream,url:Object,parent:TEntity=Null,flags:Int=-1 )
 	
 		' see: assimp.sourceforge.net/lib_html/postprocess_8h.html
@@ -25,7 +30,7 @@ Type TAssimpLoader
 		aiSetImportPropertyInteger(props, AI_CONFIG_PP_SLM_VERTEX_LIMIT, 1000000) ' SplitLargeMeshes
 		aiSetImportPropertyInteger(props, AI_CONFIG_PP_SLM_TRIANGLE_LIMIT, 1000000) ' SplitLargeMeshes
 		
-		Local scene:aiSceneEx = New aiSceneEx
+		Local scene:TaiSceneEx = New TaiSceneEx
 		Local pScene:Byte Ptr
 		
 		If stream = Null
@@ -53,13 +58,14 @@ Type TAssimpLoader
 		
 	End Function
 	
-	Function LoadAnimMeshFromScene:TMesh( scene:aiSceneEx,url:Object,parent:TEntity,flags:Int )
+	' internal function
+	Function LoadAnimMeshFromScene:TMesh( scene:TaiSceneEx,url:Object,parent:TEntity,flags:Int )
 	
 		' Make brushes
 		
 		Local id:Int, index:Int, brushes:TBrush[scene.mNumMaterials]
 		
-		For Local mat:aiMaterialEx = EachIn scene.mMaterials
+		For Local mat:TaiMaterialEx = EachIn scene.mMaterials
 		
 			Rem
 			If TGlobal3D.Log_Assimp Then DebugLog " mat Name: "+mat.GetMaterialName() ' ?mat.name
@@ -161,7 +167,7 @@ Type TAssimpLoader
 			If TGlobal3D.Log_Assimp Then DebugLog " Mesh name: "+scene.mRootNode.mName.GetCString()
 		EndIf
 		
-		For Local am:aiMeshEx = EachIn scene.mMeshes
+		For Local am:TaiMeshEx = EachIn scene.mMeshes
 		
 			If Not (flags & $8000000) ' not as single mesh, multiple if exists
 				mesh = NewMesh()

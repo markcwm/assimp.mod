@@ -11,9 +11,9 @@ To get BaH.Boost with Subversion open command-line and be sure you "cd" to bah.m
 End Rem
 Module Assimp.Assimp
 
-ModuleInfo "Version: 0.42"
+ModuleInfo "Version: 0.43"
 ModuleInfo "License: BSD-3-Clause"
-ModuleInfo "Copyright: Wrapper - 2009 Peter Scheutz"
+ModuleInfo "Copyright: Wrapper - 2009-2021 Peter Scheutz"
 ModuleInfo "Copyright: Library - 2006-2012 Assimp team"
 ModuleInfo "Source: https://github.com/markcwm/assimp.mod"
 ModuleInfo "Source: svn checkout https://github.com/maxmods/bah.mod/trunk/boost.mod"

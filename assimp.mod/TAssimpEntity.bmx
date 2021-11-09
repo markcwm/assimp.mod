@@ -9,6 +9,8 @@ Type TAssimpMinMax3D
 End Type
 
 Rem
+bbdoc: Assimp entity functions
+about:
  Non-essential functions which apply to all children of an entity:
  CountTrianglesAll:Int( mesh:TMesh )
  RotateEntityAxisAll ent:TEntity, axis:Int
@@ -20,6 +22,9 @@ Type TAssimpEntity
 
 	Global mm:TAssimpMinMax3D=New TAssimpMinMax3D
 	
+	Rem
+	bbdoc: Count all triangles of a mesh
+	EndRem
 	Function CountTrianglesAll:Int(ent:TEntity)
 	
 		If ent = Null Then Return 0
@@ -35,7 +40,10 @@ Type TAssimpEntity
 		
 	End Function
 	
-	' renamed from FlipRot (applied to all children of an entity)
+	Rem
+	bbdoc: Rotate all axis of an entity
+	about: renamed from FlipRot (applied to all children of an entity)
+	EndRem
 	Function RotateEntityAxisAll(ent:TEntity, axis:Int)
 	
 		If ent = Null Then Return
@@ -64,7 +72,10 @@ Type TAssimpEntity
 		
 	End Function
 	
-	' dirty x model fixer - renamed from UpdateEntityNormals (applied to all children of an entity)
+	Rem
+	bbdoc: Update all normals of an entity
+	about: dirty x model fixer - renamed from UpdateEntityNormals (applied to all children of an entity)
+	EndRem
 	Function UpdateNormalsAll(ent:TEntity)
 	
 		If ent = Null Then Return
@@ -82,7 +93,10 @@ Type TAssimpEntity
 		
 	End Function
 	
-	' renamed from FlipEntity (applied to all children of an entity)
+	Rem
+	bbdoc: Flip all faces of a mesh
+	about: renamed from FlipEntity (applied to all children of an entity)
+	EndRem
 	Function FlipMeshAll(ent:TEntity)
 	
 		If ent = Null Then Return
@@ -100,7 +114,10 @@ Type TAssimpEntity
 		
 	End Function
 	
-	' dirty x model fixer - renamed from ScaleFlipEntity (applied to all children of an entity)
+	Rem
+	bbdoc: Scale all axis of a mesh
+	about: dirty x model fixer - renamed from ScaleFlipEntity (applied to all children of an entity)
+	EndRem
 	Function ScaleMeshAxisAll(ent:TEntity, axis:Int)
 	
 		If ent = Null Then Return
@@ -131,7 +148,10 @@ Type TAssimpEntity
 		
 	End Function
 	
-	' uses doFitAnimMesh() and getAnimMeshMinMax()
+	Rem
+	bbdoc: Fit an animated mesh to bounding box
+	about: uses doFitAnimMesh() and getAnimMeshMinMax()
+	EndRem
 	Function FitAnimMesh(m:TEntity, x#, y#, z#, w#, h#, d#, uniform:Int=False)
 	
 		Local scalefactor#
@@ -325,9 +345,9 @@ EndRem
 	
 End Type
 
+' internal type
 Type TAssimpHelper
 
-	' Creates a list of valid files to load
 	Function EnumFiles(list:TList, dir:String, skipExt:TList)
 	
 		Local folder:Byte Ptr = ReadDir(dir)
